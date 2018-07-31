@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>当我看抖音时我在看什么？</title>
+    <link rel="stylesheet" href="../css/document.css">
+</head>
+<body style="background: url('../assets/background3.jpg') no-repeat fixed;">
+<div class="cover-overlay"></div>
+<header class="index-content">
+    <div style="background-color: #ffffff;position: relative">
+        <img src="../assets/background2.jpg" style="border-radius: 0px;z-index: 0;">
+        <img src="../assets/home.png" alt="middle" class="panel-img" id="home-img" onclick="javascript:window.location.href='https://github.com/sshiqiao'"/>
+    </div>
+
+    <ul class="panel-index">
+        <li style="padding: 5px 0px 5px 0px;font-weight: bold"><img src="../assets/menu.svg" class="icon-img"/>目录</li>
+        <li><a href="#1" class="index-link">当我看抖音时我在看什么？</a>
+            <ul class="panel-index panel-sub-index">
+                <li><a href="#1.1" class="sub-index-link">1.1 引言</a></li>
+                <li><a href="#1.2" class="sub-index-link">1.2 展示图</a></li>
+                <li><a href="#1.3" class="sub-index-link">1.3 结构总览</a></li>
+                <li><a href="#1.4" class="sub-index-link">1.4 iTunes资源获取</a></li>
+                <li><a href="#1.5" class="sub-index-link">1.5 Charles数据采集</a></li>
+                <li><a href="#1.6" class="sub-index-link">1.6 网络请求API接口</a></li>
+                <li><a href="#1.7" class="sub-index-link">1.7 第三方库使用</a></li>
+            </ul>
+        </li>
+        <li><a href="#2" class="index-link">抖音个人主页</a>
+            <ul class="panel-index panel-sub-index">
+                <li><a href="#2.1" class="sub-index-link">2.1 布局、接口分析</a></li>
+                <li><a href="#2.2" class="sub-index-link">2.2 UICollectionView指定元素固定原理</a></li>
+                <li><a href="#2.3" class="sub-index-link">2.3 UICollectionView指定元素下拉缩放原理</a></li>
+                <li><a href="#2.4" class="sub-index-link">2.4 谷歌libwebp库解析webp图片</a></li>
+                <li><a href="#2.5" class="sub-index-link">2.5 网络资源二级缓存</a></li>
+            </ul>
+        </li>
+        <li><a href="#3" class="index-link">抖音短视频列表</a>
+            <ul class="panel-index panel-sub-index">
+                <li><a href="#3.1" class="sub-index-link">3.1 布局、接口分析</a></li>
+                <li><a href="#3.2" class="sub-index-link">3.2 AVPlayerLayer实现网络视频边下载边播放</a></li>
+                <li><a href="#3.3" class="sub-index-link">3.3 UITableView实现视频源自动播放</a></li>
+                <li><a href="#3.4" class="sub-index-link">3.4 悬浮于软键盘之上的UITextView</a></li>
+                <li><a href="#3.5" class="sub-index-link">3.5 控件手势冲突处理</a></li>
+            </ul>
+        </li>
+        <li><a href="#4" class="index-link">IM即时聊天</a>
+            <ul class="panel-index panel-sub-index">
+                <li><a href="#4.1" class="sub-index-link">4.1 布局、接口分析</a></li>
+                <li><a href="#4.2" class="sub-index-link">4.2 Websocket实现即时聊天</a></li>
+                <li><a href="#4.3" class="sub-index-link">4.3 文本长宽计算汇总</a></li>
+                <li><a href="#4.4" class="sub-index-link">4.4 表情编辑功能实现</a></li>
+            </ul>
+        </li>
+        <li><a href="#5" class="index-link">总结</a></li>
+    </ul>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <script>
+        $(".panel-sub-index li a").click(function () {
+            $(this).parents().find('a').removeClass('panel-sub-index-seleted');
+            $(this).addClass('panel-sub-index-seleted');
+
+            $(this).parents().find('a').before().removeClass('sub-index-link-seleted');
+            $(this).before().addClass('sub-index-link-seleted');
+        });
+    </script>
+</header>
+
+<div class="content-wrapper">
+    <div class="post-meta">
+        <time>2018-07-30 &#8226; iOS Object-C</time>
+    </div>
+    <h1 id="1">当我看抖音时，我在看什么？</h1>
+    <blockquote>
+        <p>
+            这段时间被抖音各种意义上的刷屏，而当我看抖音时，我在看什么？<br/>
+            你以为我在看好看的小哥哥小姐姐吗?<br/>
+            答案是：没错，我就是在看好看的小哥哥小姐姐！<br/>
+        </p>
+    </blockquote>
+
+    <h2 id="1.1">1.1 引言</h2>
+    <p>
+        言归正传，作为一名移动端开发者，出于对这款火速爆红的短视频社交app的好奇以及对其独特设计的欣赏，我打算"复制"抖音的部分功能，并将功能实现原理在本文中写明，当前这篇文章的抖音demo使用Object-C语言编写，地址请点击<a href="http://www.baidu.com">这里</a>。本文属于原创，未经允许禁止转载。<br/>
+    </p>
+    <h2 id="1.2">1.2 展示图</h2>
+    <p>
+        展示图如下所示，图片来自抖音demo的屏幕录制，包含抖音个人主页、滑动播放视频列表、IM即时聊天等界面。
+    </p>
+    <div align="center" style="display:table; max-width: 1200px; white-space: nowrap;">
+        <div style="display:table-cell; padding: 2px"><img src="../assets/demo1.gif"/></div>
+        <div style="display:table-cell; padding: 2px"><img src="../assets/demo2.gif"/></div>
+        <div style="display:table-cell; padding: 2px"><img src="../assets/demo3.gif"/></div>
+        <div style="display:table-cell; padding: 2px"><img src="../assets/demo4.gif"/></div>
+        <div style="display:table-cell; padding: 2px"><img src="../assets/demo5.gif"/></div>
+    </div>
+    <div style="margin:1px 2px 0 2px">
+        <img src="../assets/demo6.gif" style="display: inline;"/>
+    </div>
+
+
+    <h2 id="1.3">1.3 结构总览</h2>
+    <p>
+        本项目共分为三个部分。第一部分为抖音个人主页实现，包含<code>NSOperationQueue</code>多队列解析<code>webp</code>动图、网络资源二级缓存框架搭建。第二部分围绕<code>AVPlayerLayer</code>展开，涉及网络视频边播放边下载、<code>UITableView</code>控制多个视频源播放。第三部分则为<code>WebSocket</code>实现IM即时聊天，其中穿插文本计算、表情编辑等功能。三个部分都涉及网络请求、json数据模型转换以及手势、动画效果处理。项目文件结构则如下图所示：<br/>
+    </p>
+    <p><img src="../assets/demo_structure.png"/></p>
+    <h2  id="1.4">1.4 iTunes切图资源获取</h2>
+    <p>
+        移动端界面的呈现离不开各种图片资源，为了更好的还原抖音的部分功能，少不了获取抖音app相应的切图文件。iOS app的切图资源与Android app一样，都在打包时安置在安装包内，使用工具即可提取切图资源。iOS端则使用<code>iTunes</code>获取切图资源，步骤如下：<br/>
+    </p>
+    <h4>1. 安装iTunes客户端</h4>
+    <p>
+        这里的<code>iTunes</code>分为<code>Mac</code>客户端和<code>Windows</code>端，<code>Mac</code>端目前最新版本是12.8，而12.6版本以后就不支持<code>ipa</code>包下载，所以在<code>Mac</code>端获取<code>ipa</code>安装包需要先删除当前安装的<code>iTunes</code>，再安装<code>iTunes</code>12.6之前的版本，而就目前<code>Mac</code>权限来说，删除<code>iTunes</code>并不是像删除普通<code>Mac</code>应用一样简单，一不小心会导致<code>iTunes</code>无法正常运行，所以不推荐在<code>Mac</code>端删除再安装低版本。不过<code>iTunes Windows</code>版本就不存在无法获取<code>ipa</code>包的问题，所以建议使用<code>Windows</code>系统安装<code>iTunes</code>获取<code>ipa</code>安装包。<br/>
+    </p>
+    <h4>2. 获取抖音ipa安装包</h4>
+    <p>
+        注意要先登录<code>apple</code>账户，在<code>iTunes</code>菜单栏选择"应用"一栏，然后在搜索框中搜索"抖音"，点击获取，下载完毕后会在资料库中显示抖音app的图标，最后右击app图标选择"在资源管理器中显示"即可看到抖音<code>ipa</code>安装包。这里是<code>Windows</code>系统上的步骤，<code>Mac</code>上操作步骤类似。<br/>
+    </p>
+    <h4>3. 获取安装包资源图片</h4>
+    <p>
+        这里在Mac系统上进行，首先解压抖音<code>ipa</code>安装包，打开解压后的<code>文件夹</code>→<code>Payload</code>，可以看到<code>Aweme.app</code>文件，选中<code>Aweme.app</code>并右击选择"显示包内容"，即可看到部分图片资源。但是远远不够，这里只包含一小部分图片资源，大部分其他资源被压缩到了<code>Assets.car</code>文件中，<code>.car</code>文件解压需要使用相关工具，这里推荐使用<code>cartool</code>。
+    </p>
+    <h2 id="1.5">1.5 Charles数据采集</h2>
+    <p>
+        对于移动端开发者来说，并不是每个项目都有机会可以直接接触到后端代码，所以进行网络请求调试时，借助<code>Charles</code>、<code>Fiddler</code>、<code>Wireshark</code>等测试工具对请求进行抓包分析，将使请求细节清晰明了的展现在开发者眼前，降低开发者的调试难度。除此之外，对他人开发的app网络请求进行抓包分析也有助于学习其API架构思路。在这里我们则使用<code>Charles</code>分析抖音<code>app</code>的API设计并获取相应的json请求数据，用来搭建本项目所需使用到的网络请求API。
+    </p>
+    <p>
+        抓包步骤：电脑端安装<code>Charles</code>并打开，然后打开需要进行网络请求抓包的移动设备，选择<code>设置</code>→<code>无限局域网</code>→<code>"当前连接的网络名称"</code>→<code>蓝色感叹号图标</code>→<code>配置代理</code>→<code>手动</code>，服务器一栏填入电脑端的<code>ip</code>地址，端口填写<code>8888</code>(<code>Charles</code>默认端口，可修改)，最后点击保存即可进行抓包分析。<code>HTTPS</code>请求抓包则需在移动端浏览器打开<code>chls.pro/ssl</code>地址并安装证书即可，注意需要在移动端设备设置了代理的情况下进行。
+    </p>
+    <p>
+        如下图所显示，我们便获取了抖音所调用的网络请求接口数据，根据这些接口数据搭建了本项目所使用的网络请求API。
+    </p>
+    <p><img src="../assets/chales01.png"/></p>
+    <h2 id="1.6">1.6 网络请求API接口</h2>
+    <p>
+        抖音demo的数据来自<code>Charles</code>抓包，这些数据被抓取后存储在抖音demo对应的服务器数据库中，以这些数据为基础搭建了抖音demo中的网络请求API，网络请求数据返回格式为json，所有接口返回的json数据结构如下所示：
+    </p>
+    <pre>
+        <code>
+{
+    "code": 0,                 //请求返回码，0表示请求成功，其他表示失败
+    "message": "success",  //请求返回信息
+    "data": {
+        ...                     //data数据为任意对象的json格式数据，可以为单一对象、数组，也可为空值
+    }
+
+    //当分页请求数据时才会返回的参数
+    "total_count": 40,     //总数据量
+    "has_more": 0           //是否还有更多数据，0为没有，1为有
+} </code>
+    </pre>
+    <p>抖音demo基本请求路径为：<code>http://116.62.9.17:8080/douyin</code>，接口类型分为访客用户、抖音用户、短视频列表、群聊、评论五类，参数等信息如下所示：</p>
+    <h4>1. 访客用户</h4>
+    <p>
+        每个客户端在启动项目app后，会根据当前设备的<code>udid</code>(<code>Unique Device Identifier</code>设备唯一标识符)注册访客用户，生成的访客用户可以使用群聊以及评论视频等功能。
+    </p>
+
+    <table>
+        <tr>
+            <th>
+                <span>类别</span>
+            </th>
+            <th>
+                <span>URL</span>
+            </th>
+            <th>
+                <span>功能</span>
+            </th>
+            <th>
+                <span>请求方式</span>
+            </th>
+            <th>
+                <span>参数</span>
+            </th>
+        </tr>
+        <tr>
+            <td rowspan="1" style="border-bottom: 0">
+                访客用户
+            </td>
+            <td>
+                visitor/create
+            </td>
+            <td>
+                创建访客用户接口
+            </td>
+            <td>
+                POST
+            </td>
+            <td>
+                udid
+            </td>
+        </tr>
+    </table>
+
+    <h4>2. 抖音用户</h4>
+    <p>
+        抖音用户是通过<code>Charles</code>抓取到到抖音用户json数据，是真实存在的抖音用户，根据id可查询，抖音demo的个人主页信息则是以我的抖音数据填充的。
+    </p>
+
+    <table>
+        <tr>
+            <th>
+                <span>类别</span>
+            </th>
+            <th>
+                <span>URL</span>
+            </th>
+            <th>
+                <span>功能</span>
+            </th>
+            <th>
+                <span>请求方式</span>
+            </th>
+            <th>
+                <span>参数</span>
+            </th>
+        </tr>
+        <tr>
+            <td rowspan="1" style="border-bottom: 0">
+                抖音用户
+            </td>
+            <td>
+                user
+            </td>
+            <td>
+                根据用户id获取用户信息
+            </td>
+            <td>
+                GET
+            </td>
+            <td>
+                id
+            </td>
+        </tr>
+    </table>
+
+    <h4>3. 短视频列表</h4>
+    <p>
+        短视频列表数据也是通过Charles抓取并保存在服务器数据库中的，但是数据中的视频、头像等资源路径调取的是抖音原始服务器路径。
+    </p>
+
+    <table>
+        <tr>
+            <th>
+                <span>类别</span>
+            </th>
+            <th>
+                <span>URL</span>
+            </th>
+            <th>
+                <span>功能</span>
+            </th>
+            <th>
+                <span>请求方式</span>
+            </th>
+            <th>
+                <span>参数</span>
+            </th>
+        </tr>
+        <tr>
+            <td rowspan="2" style="border-bottom: 0">
+                短视频
+            </td>
+            <td>
+                aweme/favorite
+            </td>
+            <td>
+                获取用户发布的短视频列表数据
+            </td>
+            <td>
+                GET
+            </td>
+            <td>
+                uid、page、size
+            </td>
+        </tr>
+        <tr>
+            <td>
+                aweme/post
+            </td>
+            <td>
+                获取用户喜欢的短视频列表数据
+            </td>
+            <td>
+                GET
+            </td>
+            <td>
+                uid、page、size
+            </td>
+        </tr>
+    </table>
+
+    <h4>4. 群聊</h4>
+    <p>
+        原计划根据抖音聊天界面实现一对一聊天，考虑到demo结构的简洁度以及便于使用该demo的用户进行即时聊天测试，就将一对一聊天改为群聊。一对一聊天和群聊两者就实现原理来讲，区别仅仅是服务器向指定单个客户端发送消息和像多个客户端发送消息。群聊API包括发送文本、图片消息以及获取消息列表和删除指定消息等。<br/>
+    </p>
+    <table>
+        <tr>
+            <th>
+                <span>类别</span>
+            </th>
+            <th>
+                <span>URL</span>
+            </th>
+            <th>
+                <span>功能</span>
+            </th>
+            <th>
+                <span>请求方式</span>
+            </th>
+            <th>
+                <span>参数</span>
+            </th>
+        </tr>
+        <tr>
+            <td rowspan="7" style="border-bottom: 0">
+                群聊
+            </td>
+            <td>
+                groupchat/text
+            </td>
+            <td>
+                发送文本类型群聊消息
+            </td>
+            <td>
+                POST
+            </td>
+            <td>
+                udid、text
+            </td>
+        </tr>
+        <tr>
+            <td>
+                groupchat/image
+            </td>
+            <td>
+                发送单张图片类型群聊消息
+            </td>
+            <td>
+                POST
+            </td>
+            <td>
+                udid、FormData图片数据
+            </td>
+        </tr>
+        <tr>
+            <td>
+                groupchat/images
+            </td>
+            <td>
+                发送多张图片类型群聊消息
+            </td>
+            <td>
+                POST
+            </td>
+            <td>
+                udid、FormData图片数据
+            </td>
+        </tr>
+        <tr>
+            <td>
+                groupchat/image
+            </td>
+            <td>
+                分页获取群聊列表
+            </td>
+            <td>
+                GET
+            </td>
+            <td>
+                图片id
+            </td>
+        </tr>
+        <tr>
+            <td>
+                groupchat/list
+            </td>
+            <td>
+                根据id获取指定图片
+            </td>
+            <td>
+                GET
+            </td>
+            <td>
+                page、size
+            </td>
+        </tr>
+        <tr>
+            <td>
+                groupchat/delete
+            </td>
+            <td>
+                根据id删除指定群聊消息
+            </td>
+            <td>
+                DELETE
+            </td>
+            <td>
+                udid、消息id
+            </td>
+        </tr>
+        <tr>
+            <td>
+                groupchat
+            </td>
+            <td>
+                消息主动推送
+            </td>
+            <td>
+                WebSocket
+            </td>
+            <td>
+                groupchat json 字符串
+            </td>
+        </tr>
+    </table>
+    <h4>5. 评论</h4>
+    <p>
+        评论分为抖音用户评论数据和访客用户评论数据，抖音用户评论数据来自<code>Charles</code>抓包，访客用户可自由对视频进行评论。
+    </p>
+    <table>
+        <tr>
+            <th>
+                <span>类别</span>
+            </th>
+            <th>
+                <span>URL</span>
+            </th>
+            <th>
+                <span>功能</span>
+            </th>
+            <th>
+                <span>请求方式</span>
+            </th>
+            <th>
+                <span>参数</span>
+            </th>
+        </tr>
+        <tr>
+            <td rowspan="3" style="border-bottom: 0">
+                评论
+            </td>
+            <td>
+                comment/post
+            </td>
+            <td>
+                根据视频id发送评论
+            </td>
+            <td>
+                POST
+            </td>
+            <td>
+                aweme_id、udid、text
+            </td>
+        </tr>
+        <tr>
+            <td>
+                comment/delete
+            </td>
+            <td>
+                根据id删除评论
+            </td>
+            <td>
+                DELETE
+            </td>
+            <td>
+                cid、udid
+            </td>
+        </tr>
+        <tr>
+            <td>
+                comment/list
+            </td>
+            <td>
+                获取分页评论列表
+            </td>
+            <td>
+                GET
+            </td>
+            <td>
+                aweme_id、page、size
+            </td>
+        </tr>
+    </table>
+    <h2 id="1.7">1.7 第三方库使用</h2>
+
+    <h4>1. AFNetworking</h4>
+    <p>
+        在网络请求框架中<code>AFNetworking</code>是iOS开发者普遍会使用到的网络请求框架库，最新版本基于<code>NSURLSession</code>，封装了各种类型的HTTP请求，方便开发者调用。在本项目的<code>Network</code>文件夹中，<code>NetworkHelper</code>文件根据项目需求封装了<code>Get</code>、<code>Post</code>、<code>Delete</code>等类型的请求，接口的请求参数由<code>Model</code>对象转为<code>NSDictionary</code>字典类，返回的请求数据统一格式为上一节介绍的基本json结构，基本json结构对应的模型为<code>BaseResponse</code>类。当服务器无法即时响应请求时，会启用本地数据进行响应，本地数据见<code>Resource</code>包下的json文件。
+    </p>
+    <h4>2. JSONModel</h4>
+    <p>
+        网络请求以json数据返回，iOS原生支持json数据转换为<code>NSDictionary</code>字典类型，但在开发时我们通常将json数据转换为指定对象，方便后续调用。这时使用<code>JSONModel</code>可以高效的将json数据转换为指定<code>Model</code>对象。除此之外，网络请求需要传递一系列的参数，这些参数在iOS开发层面是以<code>NSData</code>或<code>NSDictionary</code>进行传递，这里我们将每个请求封装为<code>BaseRequest</code>子类，<code>BaseRequest</code>继承自<code>JSONModel</code>类，方便将网络请求类转换为<code>NSDictionary</code>类型。
+    </p>
+    <h4>3. Masonry</h4>
+    <p>
+        iOS纯代码编写布局可以通过设置各种<code>constraint</code>约束来到达不同的布局效果，Apple原生提供的约束布局相对来说过于繁杂，不利于开发者调用。因此出现了各种基于原生<code>constraint</code>约束封装的布局开源框架，这些框架对原生代码进行高度封装，提供各类便于开发者调用的接口。<code>Masonry</code>则是Object-C语言较为突出的框架之一，Swift语言则是<code>Snapkit</code>框架。
+    </p>
+    <h4>4. SocketRocket</h4>
+    <p>
+        这是Facebook开源的一套实现<code>WebSocket</code>框架，依照<code>Websocket</code>协议，支持<code>ws</code>、<code>wss</code>传输协议，并提供各种消息发送接收方法，在抖音demo中用来实现服务器主动推送消息给客户端的功能——IM即时聊天。<br/>
+    </p>
+    <h4>5. libwebp</h4>
+    <p>
+        <code>webp</code>格式是由Google发展出的一种图片文件格式。这种格式不仅可以显示单图，还能高效显示由一系列图片构成的动图。除此之外，<code>webp</code>格式的图片相较于其他类型的图片格式，可以一定程度的减少文件大小。<code>libwebp</code>库则提供了基于C语言解码<code>webp</code>格式的基础API，目前比较有知名度的图片开源框架<code>SDWebImage</code>、<code>YYImage</code>都是基于此库对<code>webp</code>格式进行解码。抖音demo则根据需求结合<code>libwebp</code>库自行实现了<code>webp</code>格式数据的解码。
+    </p>
+    <p>
+        以上5个第三方库由<code>Cocoapods</code>进行管理，<code>pod</code>文件如下所示：
+    </p>
+    <pre>
+
+target 'Douyin' do
+    pod 'AFNetworking'
+    pod 'JSONModel'
+    pod 'Masonry'
+    pod 'SocketRocket'
+    pod 'libwebp'
+end
+        </pre>
+    <h1 id="2">抖音个人主页实现</h1>
+    <blockquote>
+        <p>
+            抖音个人主页部分包含<code>NSOperationQueue</code>多队列解析<code>webp</code>动图、网络资源二级缓存框架搭建。布局则以<code>UICollectioinView</code>为父容器，用于显示个人详细信息、多行多列<code>webp</code>格式动图。
+        </p>
+    </blockquote>
+    <h2 id="2.1">2.1 布局、接口分析</h2>
+    <p>抖音个人主页包含用户信息和用户发布、喜欢的视频列表，以<code>UICollectioinView</code>为父容器即可全部显示。<code>UICollectioinView</code>包含两个<code>section</code>，第一个<code>section</code>包含一个<code>Header</code>和一个<code>Footer</code>，<code>Header</code>用于显示用户头像、昵称等详细信息，<code>Footer</code>则用于切换"作品"与"喜欢"两个tab，第二个<code>section</code>则用于显示短视频<code>webp</code>格式等动图列表。 </p>
+    <p><img src="../assets/personal_center_desc.jpg"></p>
+    <p>个人主页调用了获取用户详情接口，获取用户发布、喜欢的短视频列表数据接口，接口详情如下：</p>
+    </p>
+    <h4>1. 获取用户详细信息接口</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/user</code>，参数为<code>uid</code>，json返回的详细数据参看<code>user.json</code>，<code>user.json</code>对应的模型类为项目<code>Entity</code>包下的<code>User</code>类，以下为用于显示抖音用户个人主页的<code>user</code>数据结构：</br>
+    </p>
+    <pre>
+        <code>
+{
+    "uid": "97795069353",         //用户id
+    "short_id": "881305406",     //用户抖音号
+    "nickname": "QSHI",           //用户昵称
+    "gender": 2,                    //用户性别
+    "constellation": 7,           //用户星座
+    "follower_count": 0,          //用户粉丝数量
+    "following_count": 9,         //用户关注数量
+    "aweme_count": 0,              //用户发布的短视频数量
+    "favoriting_count": 203,    //用户喜欢的短视频数量
+    "avatar_larger": {            //用户头像大图网络地址
+        "url_list": [
+                     "https://p3.pstatp.com/aweme/1080x1080/93d80025827f14085d5a.jpeg",
+                       ...
+                     ],
+        "uri": "93d80025827f14085d5a"
+    },
+    "avatar_thumb": {              //用户头像缩略图网络地址
+            ...
+    },
+    "avatar_medium": {             //用户头像中图网络地址
+            ...
+    },
+    ...
+}</code>
+    </pre>
+    <h4>2. 获取用户发布的短视频列表数据</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/aweme/post</code>，参数为<code>uid</code>、<code>page</code>、<code>size</code>，数据分页返回，json返回的详细数据参看<code>awemes.json</code>，<code>awemes.json</code>对应的模型类为项目Entity包下的<code>Aweme.h</code>类，抖音App命名"Aweme"为一个短视频模型，这个模型主要由<code>Video</code>、<code>Music</code>、<code>Author</code>等模型组成，以下为每个短视频"Aweme"的json数据结构：</p>
+    <pre>
+        <code>
+{
+    aweme_id: 6553217298029612295,   //短视频id
+    desc: "我想恋爱了",                    //短视频描述信息
+    author_user_id: 61946151784,      //短视发布作者用户id
+    rate: 12,                               //音乐播放速度
+    video: {
+      ...          //短视频详细信息，详情见下面的video数据结构
+    },
+    music: {
+      ...          //音乐详细信息，详情见下面的music数据结构
+    },
+    author: {
+      ...          //视频作者详细信息，其本质就是用户信息，上面已经解析了，详情见上面的user数据结构
+    },
+    statistics: {
+      ...          //短视频详细信息，详情见下面的statistics数据结构
+    }
+      ...
+}
+        </code>
+</pre>
+    <p><code>video</code>数据结构：</p>
+    <pre>
+        <code>
+{
+    "play_addr": {              //短视频播放网络地址
+      "url_list": [
+        "https://aweme.snssdk.com/aweme/v1/play/?video_id=v0200f390000bbor7dmj5ugugo3832cg&line=0&ratio=720p&media_type=4&vr_type=0&test_cdn=None&improve_bitrate=0",
+        ...
+      ],
+      "uri": "v0200f390000bbor7dmj5ugugo3832cg"
+    },
+    "play_addr_lowbr": {    //短视频低画质播放网络地址
+      ...
+    },
+    "origin_cover": {       //短视频第一帧原始画面网络地址
+      ...
+    },
+    "cover": {                //短视频第一帧压缩画面网络地址
+      ...
+    },
+    "download_addr": {     //短视频下载地址
+      ...
+    },
+    "dynamic_cover": {     //短视频webp格式动图网络地址
+      ...
+    }
+}</code>
+    </pre>
+    <p><code>music</code>数据结构：</p>
+    <pre>
+        <code>
+{
+    "id": 6533505360412543757,  //歌曲 id
+    "author": "Monogem",          //作者名字
+    "title": "Wild",               //歌曲名字
+    "cover_large": {               //音乐封面大图网络地址
+      "url_list": [
+        "http://p3.pstatp.com/live/720x720/6f850011ba6939f4379d.jpeg"
+      ],
+      "uri": "6f850011ba6939f4379d"
+    },
+    "cover_thumb": {       //音乐封面缩略图片地址
+      ...
+    },
+    "cover_hd": {           //音乐封面高清图片网络地址
+      ...
+    },
+    "cover_medium": {      //音乐封面中等画质图片网络地址
+      ...
+    },
+    "play_url": {           //音乐播放网络地址
+      ...
+    },
+    ...
+}</code>
+    </pre>
+    <p><code>statistics</code>数据结构：</p>
+    <pre>
+        <code>
+{
+    "aweme_id": "6553217298029612295",  //视频id
+    "play_count": 48138538,       //视频播放数量
+    "comment_count": 51202,       //视频评论数量
+    "share_count": 75606,         //视频分享数量
+    "digg_count": 2295822         //视频喜欢数量
+}</code>
+
+    </pre>
+    <h4>3. 获取用户喜欢的短视频列表数据</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/aweme/favorite</code>，参数为<code>uid</code>、<code>page</code>、<code>size</code>，数据分页返回，json返回的详细数据结构与上面"获取用户发布的短视频列表"数据一致。</br>
+    </p>
+    <h2 id="2.2">2.2 UICollectionView指定元素固定原理</h2>
+    <p>
+        通过重写<code>UICollectionViewFlowLayout</code>中的<code>layoutAttributesForElementsInRect</code>方法可以让<code>UICollectionView</code>显示诸如瀑布流、水平流动布局等各种样式的布局。其原理就是<code>layoutAttributesForElementsInRect</code>方法本身返回的是<code>UICollectionView</code>中每个元素的属性，属性中就包含元素的<code>frame</code>信息，通过修改<code>frame</code>值即可改变每个元素显示的位置，这里的元素类型分为<code>Header</code>、<code>Footer</code>、<code>Cell</code>，判断元素类型可将不同元素进行区分。</br>
+    </p>
+    <p><img src="../assets/demo7.gif"></p>
+    <p>
+        现在我们可以看到抖音个人主页在向上滑动时，第一个<code>section</code>滑动到导航栏底部时便固定位置不再上移。实现这个效果就需要将第一个<code>section</code>中的元素提取出来单独处理<code>frame</code>值。之前也介绍了，第一个<code>section</code>包含一个<code>Header</code>和一个<code>Footer</code>，<code>Header</code>用于显示用户详细信息，<code>Footer</code>则用于显示切换"作品"和"喜欢"的<code>Tab</code>栏，因此只需判断是否是第一个<code>section</code>的<code>Header</code>和<code>Footer</code>并修改<code>frame</code>值即可实现固定效果，具体代码如下：</br>
+    </p>
+    <pre>
+        <code>
+//重写layoutAttributesForElementsInRect方法
+- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
+    //获取当前在屏幕rect中显示的元素属性
+    NSMutableArray&lt;UICollectionViewLayoutAttributes *&gt; *superArray = [[super layoutAttributesForElementsInRect:rect] mutableCopy];
+
+    //移除掉所有Header和Footer类型的元素，因为抖音个人主页中只有第一个section包含Header和Footer类型元素，
+      即移除需要固定的Header和Footer，因为后续会单独添加，为了避免重复处理。
+    for (UICollectionViewLayoutAttributes *attributes in [superArray mutableCopy]) {
+        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
+            [superArray removeObject:attributes];
+        }
+    }
+
+    //单独添加上一步移除的Header和Footer，单独添加是因为第一步只能获取当前在屏幕rect中显示的元素属性，当第一个Sectioin移除屏幕便无法获取Header和Footer，
+      这是需要单独添加Header和Footer以及第二部单独移除Header和Footer的原因。
+    [superArray addObject:[super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
+    [superArray addObject:[super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
+
+    //循环当前获取的元素
+    for (UICollectionViewLayoutAttributes *attributes in superArray) {
+        //判断是否是第一个section
+        if(attributes.indexPath.section == 0) {
+            //判断是否为Header类型
+            if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]){
+                //获取Header的Frame
+                CGRect rect = attributes.frame;
+                //判断Header的bottom是否滑动到导航栏下方
+                if(self.collectionView.contentOffset.y + self.navHeight - rect.size.height > rect.origin.y) {
+                    //修改Header frame的y值
+                    rect.origin.y =  self.collectionView.contentOffset.y + self.navHeight - rect.size.height;
+                    attributes.frame = rect;
+                }
+                //设施Header层级，保证Header显示时不被其它cell覆盖
+                attributes.zIndex = 5;
+            }
+            //判断是否为Footer类型
+            if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter]){
+                //获取Footer的Frame
+                CGRect rect = attributes.frame;
+                //判断Footer的top是否滑动到导航栏下方
+                if(self.collectionView.contentOffset.y + self.navHeight > rect.origin.y) {
+                    //修改Footer frame的y值
+                    rect.origin.y =  self.collectionView.contentOffset.y + self.navHeight;
+                    attributes.frame = rect;
+                }
+                //设施Footer层级，保证Footer显示时不被其它cell覆盖，同时显示在Header之上
+                attributes.zIndex = 10;
+            }
+        }
+
+    }
+    //返回修改后的元素属性
+    return [superArray copy];
+}
+
+//重写shouldInvalidateLayoutForBoundsChange方法
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBound {
+    return YES; //返回YES，修改newBound内的元素属性
+}</code>
+    </pre>
+    <h2 id="2.3">2.3 UICollectionView指定元素下拉缩放原理</h2>
+    <p>
+        抖音个人主页在到达顶部后持续下拉，背景图片会同时逐渐出现放大的效果，类似这种效果除了抖音，在微博、微信等iOS app端都有类似使用。
+    </p>
+    <p><img src="../assets/demo8.gif"></p>
+    <p>
+        <code>UIScrollView</code>的<code>bounce</code>属性设置为<code>YES</code>后，<code>UIScrollView</code>及其子类都会有在滑动到顶部和底部时出现弹簧拉伸效果，<code>UICollectionView</code>、<code>UITableView</code>都继承自<code>UIScrollView</code>，所以也有<code>bounce</code>属性。实现抖音个人主页的拉伸效果的代码片段如下：
+    </p>
+    <pre>
+        <code>
+//实现UIScrollViewDelegate中的scrollViewDidScroll方法
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //获取当前控件y方向的偏移量
+    CGFloat offsetY = scrollView.contentOffset.y;
+    if (offsetY < 0) {
+        [_userInfoHeader overScrollAction:offsetY];
+    }
+}
+
+- (void)overScrollAction:(CGFloat) offsetY {
+    //计算背景容器缩放比例
+    CGFloat scaleRatio = fabs(offsetY)/370.0f;
+    //计算容器缩放后y方向的偏移量
+    CGFloat overScaleHeight = (370.0f * scaleRatio)/2;
+    //缩放同时平移背景容器
+    _avatarBackground.transform = CGAffineTransformConcat(CGAffineTransformMakeScale(scaleRatio + 1.0f, scaleRatio + 1.0f), CGAffineTransformMakeTranslation(0, -overScaleHeight));
+}</code>
+    </pre>
+
+    <h2 id="2.4">2.4 谷歌libwebp库解析webp格式图片</h2>
+    <p>
+        前面第三方库也介绍了，<code>webp</code>格式是由Google发展出的一种图片文件格式，支持单图、动图，且所需文件大小小于其它格式的图片文件。<code>libwebp</code>库则提供了基于C语言解码<code>webp</code>格式的基础API，目前比较有知名度的图片开源框架<code>SDWebImage</code>、<code>YYImage</code>都是基于此库对<code>webp</code>格式进行解码。虽然<code>SDWebImage</code>、<code>YYImage</code>都是基于<code>libwebp</code>库支持<code>webp</code>格式解码，但是就表现情况而言，不能很好的支持抖音主页多动图显示需要的效果。</br>
+    </p>
+    <p>
+        <code>SDWebImage</code>一个线程一次性解压一张<code>webp</code>动图，而抖音通过短视频生成的每个<code>webp</code>动图共有9帧，可以理解为有9张图片，也就是说<code>SDWebImage</code>相当于一个线程一次性解压9张图片，然后再将所有图片返回给<code>UIImageView</code>用于展示。根据真机测试每帧画面通过<code>libwebp</code>提供的解码API需要0.05-0.01s的时间，9帧则近乎需要0.5-1.0s的时间，对于像抖音个人主页这样需要快速显示多张<code>webp</code>格式动图的界面，<code>SDWebImage</code>并不是一个很好的选择。除了显示慢以外，<code>SDWebImage</code>用于解码<code>webp</code>动图的线程会占用资源，导致同时期生成的网络请求响应缓慢。</br>
+    </p>
+    <p>
+        <code>YYImage</code>则是边解码边显示，就显示速度而言，优于<code>SDWebImage</code>，但这只是在需要同时加载的<code>webp</code>格式图片不太多的情况下，当处理向抖音这种需要同时加载十几张甚至更多的情况时，<code>YYImage</code>的表现力就不那么优秀了，会出现明显掉帧卡顿的现象，除此之外和<code>SDWebImage</code>同样有线程占用资源导致网络请求响应缓慢的情况发生。
+    </p>
+    <p>
+        基于以上原因，我们需要基于<code>libwebp</code>库自行封装一个用于解码<code>webp</code>格式的类，该类可以边解码边显示大量<code>webp</code>动图，同时不会与网络请求线程进行资源抢占，具体涉及4个类：
+    </p>
+
+    <h4>1. WebPImage</h4>
+    <p>负责调用<code>libwebp</code>库提供的解码<code>webp</code>格式图片API，继承自<code>UIImage</code>。解码<code>webp</code>的思路是先将每帧画面的大小、时长等信息先存储在数组中，再提供解压指定画面的方法。</p>
+    <h4>2. WebPQueueManager</h4>
+    <p><code>WebPQueueManager</code>是用于管理多队列并发执行的类，为避免同时并发开启太多的队列导致解码时画面卡顿。</p>
+    <h4>3. WebPImageOperation</h4>
+    <p>专门用于解码<code>webp</code>画面的类，继承自<code>NSOperation</code>。</p>
+    <h4>4. WebPImageView</h4>
+    <p><code>WebPImageView</code>是负责显示<code>WebPImage</code>解码后的画面的控件，继承自<code>UIImageView</code>。<code>WebPImageView</code>添加解码<code>webp</code>画面的<code>WebPImageOperation</code>任务，并使用<code>CADisplayLink</code>保证在每帧时长间隔后刷新画面，每个<code>WebPImageView</code>都有一个用于专门解码<code>webp</code>第一帧画面的<code>NSOperationQueue</code>，和一个用于解码剩余图片的<code>NSOperationQueue</code>。两个<code>NSOperationQueue</code>的区别是前者优先级高，便于快速反馈<code>webp</code>画面从而避免线程资源占用导致画面空白的现象，后者的优先级低，这样避免了有网络请求的情况下由于资源占用导致导致数据响应延迟的现象。</p>
+    <p>这几个类之间的关系如下图所示：</p>
+    <p><img src="../assets/webp_desc.png"></p>
+
+    <h2 id="2.5">2.5 网络资源二级缓存</h2>
+    <p>二级缓存包含内存缓存和磁盘缓存，大部分第三方缓存框架都包含这两层缓存。在iOS开发中，通常内存缓存使用<code>NSCache</code>实现，磁盘缓存则是将数据以文件的形式存储在沙盒的文件夹中。</p>
+    <p>网络资源二级缓存思路：以网络资源路径进行<code>md5</code>签名，生成唯一的字符串作为<code>key</code>值，根据这个<code>key</code>值查找<code>NSCache</code>内存缓存中是否存在数据，没有则在磁盘缓存——沙盒中查找是否存在以<code>key</code>值为文件名的文件，如果两者都没有缓存数据则下载网络资源，资源下载成功后再以网络资源路径的<code>md5</code>值作为<code>key</code>值，将数据缓存进内存缓存和磁盘缓存中。在抖音demo中封装<code>WebCacheHelper</code>类实现网络视频资源、图片资源二级缓存，<code>WebCacheHelper</code>包含以下几个类：</p>
+    <h4>1. WebCache</h4>
+    <p>用于管理缓存的类，主要包含<code>NSCache</code>内存缓存、磁盘缓存数据查找，以及数据进行内存存储、磁盘存储等功能。</p>
+    <h4>2. WebDownloadOperation</h4>
+    <p>结合<code>NSURLSession</code>处理网络资源下载任务，继承自NSOperation。</p>
+    <h4>3. WebDownloader</h4>
+    <p>网络资源下载器，使用并发队列管理上面的<code>WebDownloadOperation</code>任务。</p>
+    <h4>4. WebCombineOperation</h4>
+    <p>由查询二级缓存的<code>NSOperation</code>任务和用于下载资源的<code>WebDownloadOperation</code>任务组成，方便后续取消任务。</p>
+    <p>这几个类之间的关系如下图所示：</p>
+    <p><img src="../assets/webcache_desc.png"></p>
+
+
+
+
+    <h1 id="3">抖音短视频列表</h1>
+    <blockquote>
+        <p>
+            抖音短视频采用上下滑动的方式切换视频源，在本项目我们采用<code>UITableView</code>控件封装每个视频源，每个视频源采用<code>AVPlayerLayer</code>结合<code>AVAssetResourceLoaderDelegate</code>实现边播放边下载视频源。
+        </p>
+    </blockquote>
+    <h2 id="3.1">3.1 布局、接口分析</h2>
+    <p>抖音demo采用<code>UITableView</code>实现上下滑动切换视频的效果，<code>UITableView</code>的重用机制在实现上下滑动切换视频源时，可以很大程度降低创建控件所需要的开销。视频播放则采用<code>AVFoundation</code>框架下的<code>AVPlayerLayer</code>。</p>
+    <p><img src="../assets/video_list_desc.jpg"></p>
+    <p>抖音视频列表的视频数据与抖音主页<code>webp</code>动图获取接口一致，所以查看抖音列表的视频获取接口详情请参看上一章节。除此之外，每个抖音视频播放页面有"加关注"、"喜欢"、"评论"、"分享"等控件，"加关注"、"喜欢"类型的控件交互效果采用动画效果即可实现，"评论"、"分享"类型的控件与用户进行交互后会从下方弹出弹窗，弹窗通过在<code>UIWindow</code>中添加自定义<code>View</code>来实现悬浮于当前应用界面之上的效果。评论弹窗则包含"获取评论"、"发送评论"、"删除评论"三个接口，具体接口细节如下：</p>
+    <h4>1. 获取评论列表接口</h4>
+    <p>URL：<code>是http://116.62.9.17:8080/douyin/comment/list</code>，参数为<code>aweme_id</code>、<code>page</code>、<code>size</code>，json返回的详细数据参看<code>comments.json</code>，<code>comments.json</code>对应的模型为项目Entity包下的<code>Comment</code>类，以下为抖音视频评论<code>comment</code>的数据结构：</p>
+    <pre>
+        <code>
+{
+  "cid": "1600536447291406",              //评论id
+  "aweme_id": "6539722820484599044",   //评论对应的aweme id
+  "digg_count": 3,                           //用户喜欢数量
+  "text": "\u597d\u53ef\u7231",         //评论内容
+  "user": {
+    ...                                         //视频用户详细信息，其本质就是用户信息，详情见上面的user数据结构
+  },
+  ...
+}</code>
+    </pre>
+    <h4>2. 发送评论列表接口</h4>
+    <p>URL：<code>是http://116.62.9.17:8080/douyin/comment/post</code>，参数为<code>aweme_id</code>、<code>udid</code>、<code>text</code>，json返回数据与第一个接口一致。我们可以看到请求参数包含<code>udid</code>(<code>Unique Device Identifier</code>设备唯一标识符)，前面也有介绍，当用户启动抖音demoe后，demo会获取当前设备当<code>udid</code>，并发送给服务器生成一个访客用户，这样每个用户都可以使用这个访客用户进行"评论"、"群聊"。所以评论用户在抖音demo中包含两种类型，一种是抖音上真实存在的用户，一种是在demo中通过<code>udid</code>生成的用户。因此demo中评论的json会新增"user_type"、"visitor"属性：</p>
+    <pre>
+        <code>
+{
+  "cid": "1600536447291406",              //评论id
+  "aweme_id": "6539722820484599044",   //评论对应的aweme id
+  "digg_count": 3,                           //用户喜欢数量
+  "text": "\u597d\u53ef\u7231",         //评论内容
+  "user": {
+    ...                                         //视频用户详细信息，其本质就是用户信息，详情见上面的user数据结构
+  },
+  "user_type":"visitor",                  //评论用户类型，"visitor"代表访客用户，"user"代表抖音上的用户
+  "visitor":{
+    ...                                         //访客用户数据结构，详情见下面的visitor数据结构
+  },
+  ...
+}</code>
+    </pre>
+    <p><code>visitor</code>数据结构：</p>
+    <pre>
+        <code>
+{
+  "uid": "5b4096f8e43d130352e488e7",               //访客用户id
+  "udid": "9f78a27d53d3ddf798a77d331c45e5d2",   //使用md5签名后的udid
+  "avatar_thumbnail": {                                //服务器根据udid自动生成的头像缩略图
+    "file_id": "5b4096efe43d130352e488e1",       //图片id
+    "url": "http://...",                               //图片访问路径
+    "width": 50,                                         //图片宽度
+    "height": 50,                                        //图片高度
+    "type": "image/jpeg"                              //图片类型
+  },
+  "avatar_medium": {                                   //服务器根据udid自动生成的头像中图
+    ...
+  },
+  "avatar_large": {                                    //服务器根据udid自动生成的头像大图
+    ...
+  }
+}</code>
+    </pre>
+    <h4>3. 删除评论列表接口</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/comment/delete</code>，<code>cid</code>、<code>udid</code>，返回data数据为空。</p>
+
+    <h2 id="3.2">3.2 AVPlayerLayer实现网络视频边下载边播放</h2>
+    <p><code>AVFoundation</code>框架下的<code>AVPlayerLayer</code>是<code>AVPlayer</code>的可视化输出对象，在iOS上使用<code>AVPlayerLayer</code>实现视频播放功能是个不错的选择，通过结合<code>AVAssetResourceLoaderDelegate</code>还可以实现网络视频边下载边播放的效果。抖音demo则封装了<code>AVPlayerView</code>类用于实现<code>AVPlayerLayer</code>边下载边播放。<code>AVPlayerView</code>类涉及如下几个知识点：</p>
+    <h4>1.<code>AVPlayerLayer</code>、<code>AVPlayer</code>、<code>AVURLAsset</code>、<code>AVPlayerItem</code></h4>
+    <p><code>AVPlayerLayer</code>是<code>AVPlayer</code>的可视化输出对象，<code>AVPlayer</code>则提供控制视频播放操作的接口，<code>AVURLAsset</code>表示一个视频资源，而<code>AVPlayerItem</code>则作为<code>AVURLAsset</code>视频资源的载体，这个<code>AVPlayerItem</code>载体则作为视频源提供给<code>AVPlayer</code>，<code>AVPlayer</code>通过替换<code>AVPlayerItem</code>来替换视频源，它们之间的关系如下图所示：</p>
+    <p><img src="../assets/avplayer_relationship_desc.jpg"/></p>
+
+    <h4>2. NSURLSession</h4>
+    <p>使用<code>NSURLSession</code>下载网络视频，同时通过实现<code>NSURLSessionTaskDelegate</code>、 <code>NSURLSessionDataDelegate</code>方法，为视频播放器实时提供播放数据。代理方法如下图所示：</p>
+    <p><img src="../assets/urlsession_desc.png"/></p>
+
+    <h4>3. AVAssetResourceLoaderDelegate</h4>
+    <p><code>AVAssetResourceLoaderDelegate</code>提供处理来自<code>AVURLAsset</code>资源的加载请求。通俗来说，就是将<code>AVURLAsset</code>资源的指定部分数据不断填充到<code>AVAssetResourceLoaderDelegate</code>方法生成的<code>AVAssetResourceLoadingRequest</code>请求中，被填充的<code>AVAssetResourceLoadingRequest</code>将数据不断提供给视频播放器，以此来实现边加载边播的效果，以下3步尤为重要：</p>
+    <pre>
+        <code>
+//① 将视频的网络路径的scheme改为其他自定义的scheme类型，http、https这类预留的scheme类型不能使AVAssetResourceLoaderDelegate中的方法回调
+wself.sourceURL = [wself.sourceURL.absoluteString urlScheme:@"streaming"];
+
+
+//️② 设置AVAssetResourceLoaderDelegate代理
+[wself.urlAsset.resourceLoader setDelegate:wself queue:dispatch_get_main_queue()];
+
+
+//③ 实现AVAssetResourceLoaderDelegate代理方法
+- (BOOL)resourceLoader:(AVAssetResourceLoader *)resourceLoader shouldWaitForLoadingOfRequestedResource:(AVAssetResourceLoadingRequest *)loadingRequest {
+        //创建网络视频下载请求，以及生成AVAssetResourceLoadingRequest用于加载视频缓存数据
+}
+- (void)resourceLoader:(AVAssetResourceLoader *)resourceLoader didCancelLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest {
+        //AVAssetResourceLoadingRequest请求被取消，移除视频加载请求
+}
+        </code>
+    </pre>
+    <p>通过了解以上知识点，<code>AVPlayerLayer</code>实现边下载边播放的基本思路大概出来了。简单概括就是，<code>NSURLSession</code>请求下载网络视频资源，实现<code>NSURLSessionDataDelegate</code>、<code>NSURLSessionTaskDelegate</code>中相应方法实时获取下载数据，同时填充到<code>AVAssetResourceLoaderDelegate</code>代理方法中生成的<code>AVAssetResourceLoadingRequest</code>中，最后将数据不断提供给视频源，这就实现了视频边下载边播放的效果。如果需要视频缓存，则在视频下载完毕后保存下载数据到本地即可。实现流程如下图所示：</p>
+    <p><img src="../assets/avasset_loading_delegate_desc.png"></p>
+    <h2 id="3.3">3.3 UITableView实现视频源自动播放</h2>
+    <p>
+        上一节我们封装了AVPlayerView用于边下载边播放网络视频，抖音通过用户上下滑动界面的交互方式切换视频播放源，这一节我们则介绍通过使用UITableView实现上下滑动自动播放视频源。
+    </p>
+    <h4>1.<code>UITableView</code>切换视频源</h4>
+    <p>由于<code>UITableView</code>继承自<code>UIScrollView</code>的<code>pagingEnabled</code>属性无法灵活的实现分页效果，在抖音demo中我们通过重写<code>UIScrollViewDelegate</code>代理中<code>scrollViewDidEndDragging</code>方法，并结合<code>UITableView</code>的<code>scrollToRowAtIndexPath</code>，实现<code>UITableView</code>上下滑动切换到指定<code>cell</code>的效果，代码如下：</p>
+    <pre>
+        <code>
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGPoint translatedPoint = [scrollView.panGestureRecognizer translationInView:scrollView];
+        //UITableView禁止响应其他滑动手势
+        scrollView.panGestureRecognizer.enabled = NO;
+
+        if(translatedPoint.y < -50 && self.currentIndex < (self.data.count - 1)) {
+            self.currentIndex ++;   //向下滑动索引递增
+        }
+        if(translatedPoint.y > 50 && self.currentIndex > 0) {
+            self.currentIndex --;   //向上滑动索引递减
+        }
+        [UIView animateWithDuration:0.15
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut animations:^{
+                                //UITableView滑动到指定cell
+                                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.currentIndex inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                            } completion:^(BOOL finished) {
+                                //UITableView可以响应其他滑动手势
+                                scrollView.panGestureRecognizer.enabled = YES;
+                            }];
+
+    });
+}</code>
+    </pre>
+    <p>
+        注：根据<code>UITableView</code>的重用机制，超出屏幕的<code>cell</code>会复用之前已经创建的<code>cell</code>，抖音的设计是每个<code>cell</code>视频源占满整个屏幕，上下滑动切换<code>cell</code>，因此每滑动两个<code>cell</code>就会进行<code>cell</code>复用，基于这个复用机制我们需要在<code>cell</code>的<code>prepareForReuse</code>方法中做一些必要的准备工作，以避免出现数据、界面错乱的现象。
+    </p>
+    <h4>2. UITableView自动播放当前cell视频源</h4>
+    <p>
+        一句话概括<code>UITableView</code>自动播放当前<code>cell</code>视频源原理，就是每次上下滑动切换<code>cell</code>时，暂停播放其他<code>cell</code>的视频源的同时加载播放当前<code>cell</code>视频源。在抖音demo中通过自定义<code>AVPlayerManager</code>类来管理<code>UITableView</code>中<code>cell</code>的<code>AVPlayer</code>的播放和暂停，代码请查看<code>AVPlayerManager.h</code>和<code>AVPlayerManager.m</code>文件。代码细节如下图所示：
+    </p>
+    <p><img src="../assets/avplayer_manager_desc.jpg"/></p>
+
+    <h2 id="3.4">3.4 悬浮于软键盘之上的UITextView</h2>
+    <p>当<code>UITextView</code>进入编辑状态，会弹出软键盘，于此同时<code>UITextView</code>也向上移动悬浮于软键盘之上，这是许多移动端app常见的交互场景。在抖音视频播放界面下方，是用于填写评论的<code>UITextView</code>，触摸这个<code>UITextView</code>进行编辑，<code>UITextView</code>会悬浮于软键盘之上。实现这个效果需要以下3步：
+    </p>
+    <p><img src="../assets/demo9.gif"></p>
+    <h4>1. 为软键盘弹出和收起动作注册通知</h4>
+    <pre>
+        <code>
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];</code>
+    </pre>
+    <h4>2. 获取软键盘高度</h4>
+    <pre>
+        <code>
+@implementation NSNotification (Extension)
+- (CGFloat)keyBoardHeight {
+    NSDictionary *userInfo = [self userInfo];
+    CGSize size = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    return UIInterfaceOrientationIsLandscape(orientation) ? size.width : size.height;
+}</code>
+    </pre>
+    <h4>3. 软键盘弹出和收起对应的处理方法</h4>
+    <pre>
+        <code>
+- (void)keyboardWillShow:(NSNotification *)notification {
+    self.backgroundColor = ColorBlackAlpha40;
+    //获取当前软键盘高度
+    _keyboardHeight = [notification keyBoardHeight];
+    ...  //修改UITextView位置
+}
+- (void)keyboardWillHide:(NSNotification *)notification {
+    self.backgroundColor = ColorClear;
+    //软键盘高度置0
+    _keyboardHeight = 0;
+    ... //修改UITextView位置
+}</code>
+    </pre>
+    <h2 id="3.5">3.5 控件手势冲突处理</h2>
+    <p>这里的手势冲突处理主要针对抖音视频播放界面，在抖音视频播放界面包含单击播放暂停、连击显示多个爱心、评论弹框中<code>UITableView</code>评论列表单击与父控件单击动作冲突等。解决方案包括延迟执行手势对应方法、过期取消方法执行、拦截手势事件、判断手势触控范围等。虽然不能概括iOS上所有手势冲突情况，但可作为部分参考。</p>
+    <h4>1. 相同控件单击、连击冲突处理</h4>
+    <p>在视频播放页面，单击可以控制视频的播放和暂停，连击则会显示一连串的大红色爱心💕，单击和连击势必会产生冲突。这里我们通过计算每次用户触按屏幕的时间间隔来判断响应单击还是连击操作，以0.25s为时间间隔分割线，点击第一下后延迟单击播放暂停方法调用，若在0.25s内没有捕获到第二下点击，则调用单击播放暂停方法，反之，则取消还未执行的单击方法，转而执行连击显示爱心方法。随后而来的第三次、第四次点击手势以此类推判断响应那种手势方法。代码片段如下：</p>
+    <pre>
+        <code>
+//获取点击坐标，用于设置爱心显示位置
+CGPoint point = [sender locationInView:self.container];
+//获取当前时间
+NSTimeInterval time=[[NSDate dateWithTimeIntervalSinceNow:0] timeIntervalSince1970];
+//判断当前点击时间与上次点击时间的时间间隔
+if(time - self.lastTapTime > 0.25f) {
+   //推迟0.25秒执行单击方法
+   [self performSelector:@selector(singleTapAction) withObject:nil afterDelay:0.25f];
+}else {
+   //取消执行单击方法
+   [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(singleTapAction) object: nil];
+   //执行连击显示爱心的方法
+   [self showLikeViewAnim:point oldPoint:self.lastTapPoint];
+}
+//更新上一次点击位置
+self.lastTapPoint = point;
+//更新上一次点击时间
+self.lastTapTime =  time;</code>
+    </pre>
+    <h4>2. 父控件添加手势导致<code>UITableView</code>、<code>UICollectionView</code>的<code>didSelectRowAtIndexPath</code>代理方法不响应</h4>
+    <p>触摸视频播放页面右侧的评论图标会以弹窗的形式弹出评论列表，弹窗是一个占满全屏的自定义<code>View</code>，评论列表由<code>UITableView</code>构成，占屏幕3/4，居于下方，上方1/4透明。触摸上方透明处自动收起评论弹窗，因此需要在当前父容器控件添加<code>UITapGestureRecognizer</code>，正是这个<code>UITapGestureRecognizer</code>接收了点击事件导致评论列表的<code>didSelectRowAtIndexPath</code>方法无法执行，为解决这个冲突我们需要实现<code>UIGestureRecognizerDelegate</code>中的<code>shouldReceiveTouch</code>方法，通过获取<code>UITouch</code>触摸事件中的控件类型来判断是否接收当前点击事件的方法。代码片段如下：</p>
+    <pre>
+        <code>
+//① 为当前父容器添加UITapGestureRecognizer并设置UIGestureRecognizerDelegate代理
+UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGuesture:)];
+tapGestureRecognizer.delegate = self;
+[self addGestureRecognizer:tapGestureRecognizer];
+
+//② 重写UIGestureRecognizerDelegate中的shouldReceiveTouch方法
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([NSStringFromClass([touch.view.superview class]) isEqualToString:@"CommentListCell"]) {
+        return NO;
+    }else {
+        return YES;
+    }
+}</code>
+    </pre>
+    <h4>3. 控件根据不同状态判断是否响应手势</h4>
+    <p>
+        这种情况在下一章的IM即时通信会界面涉及，也是下方<code>UITextView</code>，编辑状态时悬浮于软键盘之上，这也是自定义控件，内部除了<code>UITextView</code>控件还包含了表情选择器、图片选择器。这个自定义控件像上面的评论列表弹窗一样，也是占满全屏，上方透明、下方显示控件细节。不同的是，这次上方透明出需要根据不同情况判断是否成为响应当前触摸事件的<code>View</code>。当<code>UITextView</code>控件处于编辑状态时，触摸上方透明处收起控件，当控件为收起状态时，触摸上方透明处不响应当前的触摸事件，要实现这个方法，重写当前控件的<code>hitTest</code>方法改变响应者链即可。代码片段如下：
+    </p>
+    <pre>
+        <code>
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *hitView = [super hitTest:point withEvent:event];
+    if(hitView == self){
+        //判断当前状态是否为编辑状态
+        if(_editMessageType == EditNoneMessage) {
+            //如果不是的话则当前触摸控件不作为事件响应控件
+            return nil;
+        }
+    }
+    return hitView;
+}</code>
+    </pre>
+    <h1 id="4">IM即时聊天</h1>
+    <blockquote>
+        <p>
+            IM即时聊天有多种实现协议可供选择，抖音demo则采用Websocket实现。前面也有说明，考虑到项目结构的简洁度以及便于使用抖音demo的用户进行即时聊天测试，将一对一聊天改为群聊。而且从实现上比较一对一聊天和群聊两者区别仅仅是服务器向指定单个客户端发送消息和像多个客户端发送消息，不会改变即时聊天的本质。
+        </p>
+    </blockquote>
+    <h2 id="4.1">4.1 布局、接口分析</h2>
+    <p>抖音聊天界面和大部分app聊天界面功能设计上基本一致，<code>UITableView</code>用于显示聊天消息列表，底部一个<code>UITextView</code>用于消息文本编辑，除此之外还有<code>UICollectionView</code>实现的表情选择器、图片选择器用于发送表情、图片信息。</p>
+    <p><img src="../assets/im_desc.jpg"/></p>
+    <p>抖音聊天界面包含获取消息列表接口、发送文字消息接口、发送图片消息接口、删除消息接口，以及基于<code>Websocket</code>用于将消息主动推送到客户端的接口。详细接口细节如下：</p>
+    <h4>1. 获取消息列表接口</h4>
+    <p>URL<code>http://116.62.9.17:8080/douyin/groupchat/list</code>，参数为<code>page</code>、<code>size</code>，json返回的详细数据参看<code>groupchats.json</code>，<code>groupchats.json</code>对应的模型为项目<code>Entity</code>包下的<code>GroupChat.h</code>类，以下为群聊<code>groupchats</code>的数据结构：</p>
+
+    <pre>
+        <code>
+{
+      "id": "5b443c9e40c16807f8c68580",           //消息id
+      "visitor": {
+            ...                                            //访客用户数据结构，详情见前面介绍的visitor数据结构
+      },
+      "msg_type": "image",                            //消息类型，"image"图片消息、"text"文字消息、"system"系统消息
+      "msg_content": "file",                         //消息内容
+      "pic_thumbnail": {                              //图片缩略图信息
+        "file_id": "5b443c9e40c16807f8c6857e", //文件id
+        "url": "http://116.62.9.17....",         //图片资源路径
+        "width": 56,                                    //宽度
+        "height": 100,                                 //高度
+        "type": "image/jpeg"                         //图片类型
+      },
+      "pic_medium": {                                  //图片中图信息
+        ...
+      },
+      "pic_large": {                                   //图片大图信息
+        ...
+      },
+      "pic_original": {                               //图片原始图片信息
+        ...
+      },
+}</code>
+    </pre>
+    <h4>2. 发送文字消息接口</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/groupchat/text</code>，参数为<code>udid</code>、<code>text</code>，json返回与消息列表接口中数据一致。</p>
+    <h4>3. 发送图片消息接口</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/groupchat/image</code>，参数为<code>udid</code>和<code>FormData</code>图片数据，json返回与消息列表接口中数据一致。</p>
+    <h4>4. 删除消息接口</h4>
+    <p>URL：<code>http://116.62.9.17:8080/douyin/groupchat/delete</code>，参数为<code>udid</code>、消息<code>id</code>，返回data数据为空。</p>
+    <h4>5. Websocket接口</h4>
+    <p>URL：<code>ws://116.62.9.17:8080/douyin/groupchat</code>，每次通过上面提供的消息发送接口发送消息成功后，抖音demo服务端会使用<code>Websocket</code>向客户端主动推送群聊消息，格式为群聊消息的json数据。</p>
+    <h2 id="4.2">4.2 Websocket实现即时聊天</h2>
+    <p>抖音demo采用Facebook开源的<code>RocketSocket</code>库实现<code>IM即时聊天</code>，这个库依照<code>Websocket</code>协议，支持<code>ws</code>、<code>wss</code>传输协议，并提供各种消息发送接收方法。在抖音demo中基于<code>RocketSocket</code>库提供的方法封装了<code>WebSocketManager</code>类用于管理连接的建立、消息的接收。基本实现思路：先建立与服务器的长连接，并在连接断开后重新连接，实现<code>SRWebSocketDelegate</code>代理主要用于接收消息，观察<code>SRWebSocket.readyState</code>值变化来实时监听当前连接状态，最后注册消息接收通知来获取消息数据。具体代码查看<code>WebSocketManager.h</code>和<code>WebSocketManager.m</code>文件。<code>WebSocketManager</code>类代码细节如下图所示：</p>
+    <p><img src="../assets/websocket_desc.png"/></p>
+    <h2 id="4.3">4.3 文本长宽计算汇总</h2>
+    <p>
+        在Android开发中控件的长宽可以根据文本内容自动改变，在文本内容上开发者不需要纠结太多，而在iOS开发中就没有那么便捷了。因为iOS控件无法根据文本内容自适应，为了更好的显示界面效果，通过计算文本<code>size</code>调整控件<code>frame</code>是iOS开发者经常碰到的情况，这里就汇总一下抖音demo中文本<code>size</code>计算的方法。
+    </p>
+    <h4>1.<code>sizeWithAttributes</code>计算单行文本<code>size</code></h4>
+    <p>这种方法的返回值高度与<code>UIFont.lineHeight</code>一致，支持开头空格计算。但是包含emoji表情符的文本行高返回值有较大偏差。代码片段如下：</p>
+    <pre>
+        <code>
+@implementation NSString (Extension)
+
+- (CGSize)singleLineSizeWithText:(UIFont *)font{
+    return [self sizeWithAttributes:@{NSFontAttributeName:font}];
+}</code>
+    </pre>
+    <h4>2.<code>CoreText</code>计算单行文本<code>size</code></h4>
+    <p>这种方法支持包含emoji表情符的计算。文本开头空格、包含自定义插入的文本图片不纳入计算范围，这类情况会导致计算偏差。代码片段如下：</p>
+<pre>
+    <code>
+@implementation NSString (Extension)
+
+- (CGSize)singleLineSizeWithAttributeText:(UIFont *)font {
+    CTFontRef cfFont = CTFontCreateWithName((CFStringRef) font.fontName, font.pointSize, NULL);
+    CGFloat leading = font.lineHeight - font.ascender + font.descender;
+    CTParagraphStyleSetting paragraphSettings[1] = { kCTParagraphStyleSpecifierLineSpacingAdjustment, sizeof (CGFloat), &leading };
+
+    CTParagraphStyleRef  paragraphStyle = CTParagraphStyleCreate(paragraphSettings, 1);
+    CFRange textRange = CFRangeMake(0, self.length);
+
+    CFMutableAttributedStringRef string = CFAttributedStringCreateMutable(kCFAllocatorDefault, self.length);
+
+    CFAttributedStringReplaceString(string, CFRangeMake(0, 0), (CFStringRef) self);
+
+    CFAttributedStringSetAttribute(string, textRange, kCTFontAttributeName, cfFont);
+    CFAttributedStringSetAttribute(string, textRange, kCTParagraphStyleAttributeName, paragraphStyle);
+
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(string);
+    return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), nil, CGSizeMake(DBL_MAX, DBL_MAX), nil);
+}</code>
+</pre>
+    <h4>3.<code>CoreText</code>计算多行文本<code>size</code></h4>
+    <p>这种方法支持包含emoji表情符的计算。文本开头空格、包含自定义插入的文本图片不纳入计算范围，这类情况会导致计算偏差。代码片段如下：</p>
+<pre>
+    <code>
+@implementation NSString (Extension)
+
+- (CGSize)multiLineSizeWithAttributeText:(CGFloat)width font:(UIFont *)font {
+    CTFontRef cfFont = CTFontCreateWithName((CFStringRef) font.fontName, font.pointSize, NULL);
+    CGFloat leading = font.lineHeight - font.ascender + font.descender;
+    CTParagraphStyleSetting paragraphSettings[1] = { kCTParagraphStyleSpecifierLineBreakMode, sizeof (CGFloat), &leading };
+
+    CTParagraphStyleRef  paragraphStyle = CTParagraphStyleCreate(paragraphSettings, 1);
+    CFRange textRange = CFRangeMake(0, self.length);
+
+    CFMutableAttributedStringRef string = CFAttributedStringCreateMutable(kCFAllocatorDefault, self.length);
+
+    CFAttributedStringReplaceString(string, CFRangeMake(0, 0), (CFStringRef) self);
+
+    CFAttributedStringSetAttribute(string, textRange, kCTFontAttributeName, cfFont);
+    CFAttributedStringSetAttribute(string, textRange, kCTParagraphStyleAttributeName, paragraphStyle);
+
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(string);
+    return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), nil, CGSizeMake(width, DBL_MAX), nil);
+}</code>
+</pre>
+    <h4>4.<code>boundingRectWithSize</code>多行文本<code>size</code></h4>
+    <p>这种方法支持文本开头空格、包含自定义插入的文本图片不纳入计算范围。当文本包含emoji表情符仍然会有较大偏差，但在<code>UITextView</code>和<code>UILabel</code>等控件中不影响显示。代码片段如下：</p>
+    <pre>
+        <code>
+@implementation NSAttributedString (Extension)
+
+- (CGSize)multiLineSize:(CGFloat)width {
+    CGRect rect = [self boundingRectWithSize:CGSizeMake(width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
+    return CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+}</code>
+    </pre>
+    <h2 id="4.4">4.4 表情编辑功能实现</h2>
+    <p>
+        发送表情是大多数IM即时聊天app常见的需求，在抖音demo中实现表情编辑功能大致分为以下4步：
+    </p>
+    <h4>1. 获取<code>Emoticons.boundle</code>资源包</h4>
+    <p><code>Emoticons.boundle</code>包含了抖音聊天界面的所有表情图片，通过抖音ipa安装包即可获取。</p>
+    <p><img src="../assets/emoticons_bundle.jpg"/></p>
+    <h4>2. 生成<code>emotion.json</code>文件</h4>
+    <p><code>emotion.json</code>中的数据通过代码编写生成，具体生成代码不进行讲解。这个文件中包含一个字典和一个二维数组，字典以<code>Emoticons.boundle</code>表情图片文件名作为<code>key</code>值、表情对应的文本作为<code>value</code>值，数组则包含了表情选择器中每一页的表情图片文件名，<code>emotion.json</code>中字典与数组结构如下：</p>
+    <pre>
+        <code>
+    key(表情图片名)     value(表情符号文字）
+         "kuye"       :     "[枯叶]",
+        "xiongji"    :     "[胸肌]",
+           ...         :       ...   ,
+           ...         :       ...   ,</code>
+    </pre>
+    <pre>
+        <code>
+    每页包含的表情图片文件名（字典key值）
+    ["weixiao", "ziya", ...],           第1页
+    ["daxiao", "xiaoguzhang", ...],   第2页
+    [...],                 第3页
+    [...],                 第4页
+    [...],                 第5页
+    [...]                  第6页</code>
+    </pre>
+    <h4>3. 编写<code>EmotionSelector</code>表情包选择器</h4>
+    <p><code>EmotionSelector</code>使用<code>UICollectionView</code>作为容器，结合<code>emotion.json</code>中存储每页表情图片文件名的<code>NSArray</code>二维数组数据，为<code>UICollectionView</code>每一页中的<code>cell</code>匹配对应的表情图片，选中表情后会通过自定义<code>EmotionSelectorDelegate</code>返回<code>emotion.json</code>中表情图片文件名作为<code>key</code>值、表情对应的文本作为<code>value</code>值的<code>NSDictionary</code>字典对应的<code>key</code>值，即返回相应的表情包图片文件名。具体代码查看<code>EmotionSelector.h</code>和<code>EmotionSelector.m</code>文件。界面解析如下图所示：</p>
+    <p><img src="../assets/emotion_selector_desc.png"/></p>
+    <h4>4. 编写<code>EmotionHelper</code>帮助类</h4>
+    <p>在iOS上通过向<code>NSMutableAttributedString</code>指定位置插入<code>NSTextAttachment</code>可以实现图文混排，而表情编辑功能其实质就是图文混排。<code>NSTextAttachment</code>可以理解为封装了图片特殊文本，因此实现表情编辑功能实质上就是表情文本与<code>NSTextAttachment</code>的之间的相互转换，例：[飞吻]⇌😘。<code>EmotionHelper</code>则封装了相关的转换方法.具体代码查看<code>EmotionHelper.h</code>和<code>EmotionHelper.m</code>文件。<code>EmotionHelper</code>类代码细节如下图所示：</p>
+    <p><img src="../assets/emotion_helper_desc.jpg"/></p>
+
+    <h1 id="5">总结</h1>
+    <p>以上虽然不能完全覆盖抖音demo的方方面面，但也算是比较好的一个"使用指南"。抖音demo其实只有三个<code>ViewController</code>，但是每个<code>ViewController</code>都由一个一个细节组成。真正在开发一款完整app的时候，其实也都是由一个一个细节慢慢堆积而成的。熟话说，千里之行始于足下，希望这个由一个个小细节搭建而成的抖音demo能对你有帮助，谢谢！</p>
+</div>
+</body>
+</html>
