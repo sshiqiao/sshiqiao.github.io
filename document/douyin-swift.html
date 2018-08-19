@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <title>当我看抖音时我在看什么？</title>   
+    <title>抖音Swift版介绍</title>
+    <!--网页标题左侧显示-->
+    <link rel="icon" href="../assets/background2.jpg" type="image/x-icon">
+    <!--收藏夹显示图标-->
+    <link rel="shortcut icon" href="../assets/background2.jpg" type="image/x-icon">
     <link rel="stylesheet" href="../css/document.css">
 </head>
 <body style="background: url('../assets/background3.jpg') no-repeat fixed;">
@@ -14,7 +18,7 @@
 
     <ul class="panel-index">
         <li style="padding: 5px 0px 5px 0px;font-weight: bold"><img src="../assets/menu.svg" class="icon-img"/>目录</li>
-        <li><a href="#1" class="index-link">当我看抖音时我在看什么？</a>
+        <li><a href="#1" class="index-link">抖音Swift版介绍</a>
             <ul class="panel-index panel-sub-index">
                 <li><a href="#1.1" class="sub-index-link">1.1 引言</a></li>
                 <li><a href="#1.2" class="sub-index-link">1.2 展示图</a></li>
@@ -23,6 +27,7 @@
                 <li><a href="#1.5" class="sub-index-link">1.5 Charles数据采集</a></li>
                 <li><a href="#1.6" class="sub-index-link">1.6 网络请求API接口</a></li>
                 <li><a href="#1.7" class="sub-index-link">1.7 第三方库使用</a></li>
+                <li><a href="#1.8" class="sub-index-link">1.8 Swift对比Object-C</a></li>
             </ul>
         </li>
         <li><a href="#2" class="index-link">抖音个人主页</a>
@@ -68,20 +73,19 @@
 
 <div class="content-wrapper">
     <div class="post-meta">
-        <time>2018-07-30 &#8226; iOS Object-C</time>
+        <time>2018-08-19 &#8226; iOS Swift</time>
     </div>
-    <h1 id="1">当我看抖音时，我在看什么？</h1>
+    <h1 id="1">抖音Swift版介绍</h1>
     <blockquote>
         <p>
-            这段时间被抖音各种意义上的刷屏，而当我看抖音时，我在看什么？<br/>
-            你以为我在看好看的小哥哥小姐姐吗?<br/>
-            答案是：没错，我就是在看好看的小哥哥小姐姐！<br/>
+            <a href="https://sshiqiao.github.io/document/douyin-objectc.html">上一篇</a>写完抖音Object-C版，这一篇写Swift版。</br>
+            Swift版代码逻辑大致与Object-C版一致，只是采用了不同的第三方库。</br>
+            除此之外，难得有机会使用Object-C和Swift写同样的功能，顺便总结一下两者在进行iOS开发的异同。</br>
         </p>
     </blockquote>
-
     <h2 id="1.1">1.1 引言</h2>
     <p>
-        言归正传，作为一名移动端开发者，出于对这款火速爆红的短视频社交app的好奇以及对其独特设计的欣赏，我打算"复制"抖音的部分功能，并将功能实现原理在本文中写明，当前这篇文章的抖音demo使用Object-C语言编写，地址请点击<a href="https://github.com/sshiqiao/douyin-ios-objectc">这里</a>。本文属于原创，未经允许禁止转载。<br/>
+        Object-C语言相比其他语言要复杂许多，对初学者不太友好，这也是是苹果大力推行Swift语言的原因。Swift其实是基于Object-C进行包装，为开发者提供便利的开发语言，很多设计理念都是一样的，从Object-C转Swift开发，或者从Swift转Object-C开发其实并没有很大的难度。这篇文章的抖音demo则使用Swift语言编写，地址请点击<a href="https://github.com/sshiqiao/douyin-ios-swift">这里</a>。本文属于原创，未经允许禁止转载。<br/>
     </p>
     <h2 id="1.2">1.2 展示图</h2>
     <p>
@@ -101,9 +105,9 @@
 
     <h2 id="1.3">1.3 结构总览</h2>
     <p>
-        本项目共分为三个部分。第一部分为抖音个人主页实现，包含<code>NSOperationQueue</code>多队列解析<code>webp</code>动图、网络资源二级缓存框架搭建。第二部分围绕<code>AVPlayerLayer</code>展开，涉及网络视频边播放边下载、<code>UITableView</code>控制多个视频源播放。第三部分则为<code>WebSocket</code>实现IM即时聊天，其中穿插文本计算、表情编辑等功能。三个部分都涉及网络请求、json数据模型转换以及手势、动画效果处理。项目文件结构则如下图所示：<br/>
+        本项目共分为三个部分。第一部分为抖音个人主页实现，包含<code>OperationQueue</code>多队列解析<code>webp</code>动图、网络资源二级缓存框架搭建。第二部分围绕<code>AVPlayerLayer</code>展开，涉及网络视频边播放边下载、<code>UITableView</code>控制多个视频源播放。第三部分则为<code>WebSocket</code>实现IM即时聊天，其中穿插文本计算、表情编辑等功能。三个部分都涉及网络请求、json数据模型转换以及手势、动画效果处理。项目文件结构则如下图所示：<br/>
     </p>
-    <p><img src="../assets/demo_structure.png"/></p>
+    <p><img src="../assets/demo_structure_swift.png"/></p>
     <h2  id="1.4">1.4 iTunes切图资源获取</h2>
     <p>
         移动端界面的呈现离不开各种图片资源，为了更好的还原抖音的部分功能，少不了获取抖音app相应的切图文件。iOS app的切图资源与Android app一样，都在打包时安置在安装包内，使用工具即可提取切图资源。iOS端则使用<code>iTunes</code>获取切图资源，步骤如下：<br/>
@@ -484,21 +488,21 @@
     </table>
     <h2 id="1.7">1.7 第三方库使用</h2>
 
-    <h4>1. AFNetworking</h4>
+    <h4>1. Alamofire</h4>
     <p>
-        在网络请求框架中<code>AFNetworking</code>是iOS开发者普遍会使用到的网络请求框架库，最新版本基于<code>NSURLSession</code>，封装了各种类型的HTTP请求，方便开发者调用。在本项目的<code>Network</code>文件夹中，<code>NetworkHelper</code>文件根据项目需求封装了<code>Get</code>、<code>Post</code>、<code>Delete</code>等类型的请求，接口的请求参数由<code>Model</code>对象转为<code>NSDictionary</code>字典类，返回的请求数据统一格式为上一节介绍的基本json结构，基本json结构对应的模型为<code>BaseResponse</code>类。当服务器无法即时响应请求时，会启用本地数据进行响应，本地数据见<code>Resource</code>包下的json文件。
+        Alamofire和AFNetworking框架是由相同的开发者编写的，只不过前者基于Swift语言编写，后者基于Object-C。在本项目的<code>Network</code>文件夹中，<code>NetworkManager</code>文件根据项目需求封装了<code>Get</code>、<code>Post</code>、<code>Delete</code>等类型的请求，接口的请求参数由<code>Model</code>对象转为<code>NSDictionary</code>字典类，返回的请求数据统一格式为上一节介绍的基本json结构，基本json结构对应的模型为<code>BaseResponse</code>类。当服务器无法即时响应请求时，会启用本地数据进行响应，本地数据见<code>Resource</code>包下的json文件。
     </p>
-    <h4>2. JSONModel</h4>
+    <h4>2. HandyJSON</h4>
     <p>
-        网络请求以json数据返回，iOS原生支持json数据转换为<code>NSDictionary</code>字典类型，但在开发时我们通常将json数据转换为指定对象，方便后续调用。这时使用<code>JSONModel</code>可以高效的将json数据转换为指定<code>Model</code>对象。除此之外，网络请求需要传递一系列的参数，这些参数在iOS开发层面是以<code>NSData</code>或<code>NSDictionary</code>进行传递，这里我们将每个请求封装为<code>BaseRequest</code>子类，<code>BaseRequest</code>继承自<code>JSONModel</code>类，方便将网络请求类转换为<code>NSDictionary</code>类型。
+        网络请求以json数据返回，iOS原生支持json数据转换为<code>Dictionary</code>字典类型，但在开发时我们通常将json数据转换为指定对象，方便后续调用。这时使用<code>HandyJSON</code>可以高效的将json数据转换为指定<code>Model</code>对象。除此之外，网络请求需要传递一系列的参数，这些参数在iOS开发层面是以<code>Data</code>或<code>Dictionary</code>进行传递，这里我们将每个请求封装为<code>BaseRequest</code>子类，<code>BaseRequest</code>继承自<code>HandyJSON</code>，方便将网络请求类转换为<code>Dictionary</code>类型。
     </p>
-    <h4>3. Masonry</h4>
+    <h4>3. SnapKit</h4>
     <p>
-        iOS纯代码编写布局可以通过设置各种<code>constraint</code>约束来到达不同的布局效果，Apple原生提供的约束布局相对来说过于繁杂，不利于开发者调用。因此出现了各种基于原生<code>constraint</code>约束封装的布局开源框架，这些框架对原生代码进行高度封装，提供各类便于开发者调用的接口。<code>Masonry</code>则是Object-C语言较为突出的框架之一，Swift语言则是<code>Snapkit</code>框架。
+        iOS纯代码编写布局可以通过设置各种<code>constraint</code>约束来到达不同的布局效果，Apple原生提供的约束布局相对来说过于繁杂，不利于开发者调用。因此出现了各种基于原生<code>constraint</code>约束封装的布局开源框架，这些框架对原生代码进行高度封装，提供各类便于开发者调用的接口。<code>Snapkit</code>是Swift语言普遍使用的框架之一，Object-C语言则是<code>Masonry</code>框架。
     </p>
-    <h4>4. SocketRocket</h4>
+    <h4>4. Starscream</h4>
     <p>
-        这是Facebook开源的一套实现<code>WebSocket</code>框架，依照<code>Websocket</code>协议，支持<code>ws</code>、<code>wss</code>传输协议，并提供各种消息发送接收方法，在抖音demo中用来实现服务器主动推送消息给客户端的功能——IM即时聊天。<br/>
+        Starscream是一套实现<code>WebSocket</code>框架，依照<code>Websocket</code>协议，支持<code>ws</code>、<code>wss</code>传输协议，并提供各种消息发送接收方法，在抖音demo中用来实现服务器主动推送消息给客户端的功能——IM即时聊天。<br/>
     </p>
     <h4>5. libwebp</h4>
     <p>
@@ -510,17 +514,37 @@
     <pre>
 
 target 'Douyin' do
-    pod 'AFNetworking'
-    pod 'JSONModel'
-    pod 'Masonry'
-    pod 'SocketRocket'
+    pod 'Alamofire'
+    pod 'HandyJSON'
+    pod 'SnapKit'
+    pod 'Starscream'
     pod 'libwebp'
 end
         </pre>
+    <h2 id="1.8">1.8 Swift对比Object-C</h2>
+    <p>
+        <code>Swift</code>作为苹果大力推行的iOS开发语言，相比于<code>Object-C</code>，很大程度降低了开发者的开发难度，这节就列举一下 <code>Swift</code>和<code>Object-C</code>的不同之处。
+    </p>
+    <h4>1. 编译速度</h4>
+    <p><code>Swift</code>语言其实是基于<code>Object-C</code>进行了一层包装，其本质还是调用<code>Object-C</code>，只是在语法上更加便于开发者理解、调用。因此相较于<code>Object-C</code>语言，在编译这一步会消耗更多时间。不过，在<code>Xcode</code>9.0以后，<code>Swift</code>项目的编译速度明显提升，且错误、警告、方法提示等出现等速度也明显快了许多，<code>Swift</code>语言一年比一年成熟这是毋庸置疑的。</p>
+    <h4>2. 文件结构</h4>
+    <p><code>Object-C</code>新定义一个类时需要同时创建.h文件和.m文件，.h文件进行方法属性的一些申明.m文件则对头文件中对方法进行实现或扩展。在<code>Swift</code>中只需要创建.swift文件即可，不区分.h文件和.m文件，方法属性都在.swift文件中申明，使用<code>Swift</code>语言开发iOS项目，项目文件总数量直接减少一半。除此之外，调用同一项目中的文件，不再需要<code>import</code>即可直接调用，避免了文件相互嵌套的情况。</p>
+    <h4>3. Swift、Objec-C混合编译</h4>
+    <p>
+        目前大部分的项目依旧使用<code>Object-C</code>语言进行开发，尤其是大厂，项目庞大且繁杂，如果直接使用<code>Swift</code>语言重新开发难度较大，且<code>Swift</code>语言每一个版本变动都较大，使用起来有一定的风险。尽管有诸多问题，但是<code>Swift</code>作为苹果大力推行都开发语言，在未来普及是趋势。因此使用<code>Object-C</code>和<code>Swift</code>混合编译也不失为一种好的选择。</br>
+        <code>Object-C</code>调用<code>Swift</code>就和调用普通<code>Object-C</code>文件一样简单，import<code>Swift</code>文件即可。<code>Swift</code>调用Object-C则需要调用通过一个.h文件作为桥接，把需要调用的<code>Object-C</code>文件import进桥接文件，这样<code>Object-C</code>文件就和<code>Swift</code>文件一样可以自由调用了。在抖音demo中，则创建了<code>Douyin+bridging+Header.h</code>文件作为桥接文件，桥接了<code>WebPImage</code>类文件。
+    </p>
+    <h4>4. 语法风格</h4>
+    <p>Swift语法风格相较于<code>Object-C</code>更为简单也更为贴近其他开发语言，使用点号代替中括号调用类方法、属性，省略冒号作为每行代码分隔符，每次版本更新后方法名变得越来越简练，代码长度越来越短。总体除了下面要说的<code>Swift</code>安全性和可选择性以外，大部分设计理念于<code>Object-C</code>相同，因此方法调用上两者仅仅是风格上的区别。</p>
+    <h4>5. Swift3.0的安全特性</h4>
+    <p><code>Swift</code>3.0新增了安全特性，简单来说就是保护代码不因为调用空值导致崩溃，比如调用处理图片的API时返回的数据可能是空值，这时<code>Swift</code>的安全特性就会提示需要判断或者使用默认值进行替代。这个虽然刚开始接触时，感觉增加了代码的复杂程度，但是在不同场景上的确可以为代码可能出现的奔溃情况作出及时的防护，这也是<code>Object-C</code>不具有的特性。</p>
+    <h4>6. Category合并至Extension</h4>
+    <p>在<code>Object-C</code>中进行对类进行扩展有两种方法，一种是在定义类文件中进行一个匿名扩展，一种是使用<code>Catagory</code>在类以外的文件中对类进行指定扩展名的扩展。其实这两者合并起来也未尝不可，于是在<code>Swift</code>语法中就没有<code>Extension</code>和<code>Category</code>之分了，统一都是使用<code>extension</code>对类进行扩展，这样不但简化了语法还使结构变得更加清晰。</p>
+
     <h1 id="2">抖音个人主页实现</h1>
     <blockquote>
         <p>
-            抖音个人主页部分包含<code>NSOperationQueue</code>多队列解析<code>webp</code>动图、网络资源二级缓存框架搭建。布局则以<code>UICollectioinView</code>为父容器，用于显示个人详细信息、多行多列<code>webp</code>格式动图。
+            抖音个人主页部分包含<code>OperationQueue</code>多队列解析<code>webp</code>动图、网络资源二级缓存框架搭建。布局则以<code>UICollectioinView</code>为父容器，用于显示个人详细信息、多行多列<code>webp</code>格式动图。
         </p>
     </blockquote>
     <h2 id="2.1">2.1 布局、接口分析</h2>
@@ -666,64 +690,70 @@ end
     <pre>
         <code>
 //重写layoutAttributesForElementsInRect方法
-- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    //获取当前在屏幕rect中显示的元素属性
-    NSMutableArray&lt;UICollectionViewLayoutAttributes *&gt; *superArray = [[super layoutAttributesForElementsInRect:rect] mutableCopy];
+override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    var superArray:[UICollectionViewLayoutAttributes] = super.layoutAttributesForElements(in: rect)!
 
-    //移除掉所有Header和Footer类型的元素，因为抖音个人主页中只有第一个section包含Header和Footer类型元素，
-      即移除需要固定的Header和Footer，因为后续会单独添加，为了避免重复处理。
-    for (UICollectionViewLayoutAttributes *attributes in [superArray mutableCopy]) {
-        if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-            [superArray removeObject:attributes];
+    //移除掉所有Header和Footer类型的元素，因为抖音个人主页中只有第一个section包含Header和Footer类型元素，即移除需要固定的Header和Footer，因为后续会单独添加，为了避免重复处理。
+    let copyArray = superArray
+    for index in 0..&lt;copyArray.count {
+        let attributes = copyArray[index]
+        if attributes.representedElementKind == UICollectionElementKindSectionHeader || attributes.representedElementKind == UICollectionElementKindSectionFooter {
+           if let idx = superArray.index(of: attributes) {
+               superArray.remove(at: idx)
+           }
         }
     }
 
-    //单独添加上一步移除的Header和Footer，单独添加是因为第一步只能获取当前在屏幕rect中显示的元素属性，当第一个Sectioin移除屏幕便无法获取Header和Footer，
-      这是需要单独添加Header和Footer以及第二部单独移除Header和Footer的原因。
-    [superArray addObject:[super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
-    [superArray addObject:[super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]]];
+    //单独添加上一步移除的Header和Footer，单独添加是因为第一步只能获取当前在屏幕rect中显示的元素属性，当第一个Sectioin移除屏幕便无法获取Header和Footer，这是需要单独添加Header和Footer以及第二部单独移除Header和Footer的原因。
+    if let header = super.layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: IndexPath.init(item: 0, section: 0)) {
+        superArray.append(header)
+    }
+    if let footer = super.layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionFooter, at: IndexPath.init(item: 0, section: 0)) {
+        superArray.append(footer)
+    }
 
     //循环当前获取的元素
-    for (UICollectionViewLayoutAttributes *attributes in superArray) {
+    for attributes in superArray {
         //判断是否是第一个section
-        if(attributes.indexPath.section == 0) {
+        if attributes.indexPath.section == 0 {
             //判断是否为Header类型
-            if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]){
+            if attributes.representedElementKind == UICollectionElementKindSectionHeader {
                 //获取Header的Frame
-                CGRect rect = attributes.frame;
+                var rect = attributes.frame
                 //判断Header的bottom是否滑动到导航栏下方
-                if(self.collectionView.contentOffset.y + self.navHeight - rect.size.height > rect.origin.y) {
+                if (self.collectionView?.contentOffset.y)! + self.navHeight - rect.size.height > rect.origin.y {
                     //修改Header frame的y值
-                    rect.origin.y =  self.collectionView.contentOffset.y + self.navHeight - rect.size.height;
-                    attributes.frame = rect;
+                    rect.origin.y = (self.collectionView?.contentOffset.y)! + self.navHeight - rect.size.height
+                    attributes.frame = rect
                 }
                 //设施Header层级，保证Header显示时不被其它cell覆盖
-                attributes.zIndex = 5;
+                attributes.zIndex = 5
             }
+
             //判断是否为Footer类型
-            if ([attributes.representedElementKind isEqualToString:UICollectionElementKindSectionFooter]){
+            if attributes.representedElementKind == UICollectionElementKindSectionFooter {
                 //获取Footer的Frame
-                CGRect rect = attributes.frame;
+                var rect = attributes.frame
                 //判断Footer的top是否滑动到导航栏下方
-                if(self.collectionView.contentOffset.y + self.navHeight > rect.origin.y) {
+                if (self.collectionView?.contentOffset.y)! + self.navHeight > rect.origin.y {
                     //修改Footer frame的y值
-                    rect.origin.y =  self.collectionView.contentOffset.y + self.navHeight;
-                    attributes.frame = rect;
+                    rect.origin.y = (self.collectionView?.contentOffset.y)! + self.navHeight
+                    attributes.frame = rect
                 }
                 //设施Footer层级，保证Footer显示时不被其它cell覆盖，同时显示在Header之上
-                attributes.zIndex = 10;
+                attributes.zIndex = 10
             }
         }
-
     }
     //返回修改后的元素属性
-    return [superArray copy];
+    return superArray
 }
 
 //重写shouldInvalidateLayoutForBoundsChange方法
-- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBound {
-    return YES; //返回YES，修改newBound内的元素属性
-}</code>
+override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+    return true
+}
+            </code>
     </pre>
     <h2 id="2.3">2.3 UICollectionView指定元素下拉缩放原理</h2>
     <p>
@@ -731,32 +761,32 @@ end
     </p>
     <p><img src="../assets/demo8.gif"></p>
     <p>
-        <code>UIScrollView</code>的<code>bounce</code>属性设置为<code>YES</code>后，<code>UIScrollView</code>及其子类都会有在滑动到顶部和底部时出现弹簧拉伸效果，<code>UICollectionView</code>、<code>UITableView</code>都继承自<code>UIScrollView</code>，所以也有<code>bounce</code>属性。实现抖音个人主页的拉伸效果的代码片段如下：
+        <code>UIScrollView</code>的<code>bounce</code>属性设置为<code>true</code>后，<code>UIScrollView</code>及其子类都会有在滑动到顶部和底部时出现弹簧拉伸效果，<code>UICollectionView</code>、<code>UITableView</code>都继承自<code>UIScrollView</code>，所以也有<code>bounce</code>属性。实现抖音个人主页的拉伸效果的代码片段如下：
     </p>
     <pre>
         <code>
 //实现UIScrollViewDelegate中的scrollViewDidScroll方法
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+func scrollViewDidScroll(_ scrollView: UIScrollView) {
     //获取当前控件y方向的偏移量
-    CGFloat offsetY = scrollView.contentOffset.y;
-    if (offsetY < 0) {
-        [_userInfoHeader overScrollAction:offsetY];
+    let offsetY = scrollView.contentOffset.y
+    if offsetY < 0 {
+        userInfoHeader?.overScrollAction(offsetY: offsetY)
     }
 }
 
-- (void)overScrollAction:(CGFloat) offsetY {
+func overScrollAction(offsetY:CGFloat)  {
     //计算背景容器缩放比例
-    CGFloat scaleRatio = fabs(offsetY)/370.0f;
+    let scaleRatio:CGFloat = fabs(offsetY)/370.0
     //计算容器缩放后y方向的偏移量
-    CGFloat overScaleHeight = (370.0f * scaleRatio)/2;
+    let overScaleHeight:CGFloat = (370.0 * scaleRatio)/2.0
     //缩放同时平移背景容器
-    _avatarBackground.transform = CGAffineTransformConcat(CGAffineTransformMakeScale(scaleRatio + 1.0f, scaleRatio + 1.0f), CGAffineTransformMakeTranslation(0, -overScaleHeight));
+    avatarBackground.transform = CGAffineTransform.init(scaleX: scaleRatio + 1.0, y: scaleRatio + 1.0).concatenating(CGAffineTransform.init(translationX: 0, y: -overScaleHeight))
 }</code>
     </pre>
 
     <h2 id="2.4">2.4 谷歌libwebp库解析webp格式图片</h2>
     <p>
-        前面第三方库也介绍了，<code>webp</code>格式是由Google发展出的一种图片文件格式，支持单图、动图，且所需文件大小小于其它格式的图片文件。<code>libwebp</code>库则提供了基于C语言解码<code>webp</code>格式的基础API，目前比较有知名度的图片开源框架<code>SDWebImage</code>、<code>YYImage</code>都是基于此库对<code>webp</code>格式进行解码。虽然<code>SDWebImage</code>、<code>YYImage</code>都是基于<code>libwebp</code>库支持<code>webp</code>格式解码，但是就表现情况而言，不能很好的支持抖音主页多动图显示需要的效果。</br>
+        <code>webp</code>格式是由Google发展出的一种图片文件格式，支持单图、动图，且所需文件大小小于其它格式的图片文件。<code>libwebp</code>库则提供了基于C语言解码<code>webp</code>格式的基础API，目前比较有知名度的图片开源框架<code>SDWebImage</code>、<code>YYImage</code>都是基于此库对<code>webp</code>格式进行解码。虽然<code>SDWebImage</code>、<code>YYImage</code>都是基于<code>libwebp</code>库支持<code>webp</code>格式解码，但是就表现情况而言，不能很好的支持抖音主页多动图显示需要的效果。</br>
     </p>
     <p>
         <code>SDWebImage</code>一个线程一次性解压一张<code>webp</code>动图，而抖音通过短视频生成的每个<code>webp</code>动图共有9帧，可以理解为有9张图片，也就是说<code>SDWebImage</code>相当于一个线程一次性解压9张图片，然后再将所有图片返回给<code>UIImageView</code>用于展示。根据真机测试每帧画面通过<code>libwebp</code>提供的解码API需要0.05-0.01s的时间，9帧则近乎需要0.5-1.0s的时间，对于像抖音个人主页这样需要快速显示多张<code>webp</code>格式动图的界面，<code>SDWebImage</code>并不是一个很好的选择。除了显示慢以外，<code>SDWebImage</code>用于解码<code>webp</code>动图的线程会占用资源，导致同时期生成的网络请求响应缓慢。</br>
@@ -769,13 +799,13 @@ end
     </p>
 
     <h4>1. WebPImage</h4>
-    <p>负责调用<code>libwebp</code>库提供的解码<code>webp</code>格式图片API，继承自<code>UIImage</code>。解码<code>webp</code>的思路是先将每帧画面的大小、时长等信息先存储在数组中，再提供解压指定画面的方法。</p>
+    <p>负责调用<code>libwebp</code>库提供的解码<code>webp</code>格式图片API，继承自<code>UIImage</code>。解码<code>webp</code>的思路是先将每帧画面的大小、时长等信息先存储在数组中，再提供解压指定画面的方法，<code>WebPImage</code>类依旧是使用Object-C编写，通过<code>Douyin+bridging+Header.h</code>文件进行桥接。</p>
     <h4>2. WebPQueueManager</h4>
     <p><code>WebPQueueManager</code>是用于管理多队列并发执行的类，为避免同时并发开启太多的队列导致解码时画面卡顿。</p>
     <h4>3. WebPImageOperation</h4>
-    <p>专门用于解码<code>webp</code>画面的类，继承自<code>NSOperation</code>。</p>
+    <p>专门用于解码<code>webp</code>画面的类，继承自<code>Operation</code>。</p>
     <h4>4. WebPImageView</h4>
-    <p><code>WebPImageView</code>是负责显示<code>WebPImage</code>解码后的画面的控件，继承自<code>UIImageView</code>。<code>WebPImageView</code>添加解码<code>webp</code>画面的<code>WebPImageOperation</code>任务，并使用<code>CADisplayLink</code>保证在每帧时长间隔后刷新画面，每个<code>WebPImageView</code>都有一个用于专门解码<code>webp</code>第一帧画面的<code>NSOperationQueue</code>，和一个用于解码剩余图片的<code>NSOperationQueue</code>。两个<code>NSOperationQueue</code>的区别是前者优先级高，便于快速反馈<code>webp</code>画面从而避免线程资源占用导致画面空白的现象，后者的优先级低，这样避免了有网络请求的情况下由于资源占用导致导致数据响应延迟的现象。</p>
+    <p><code>WebPImageView</code>是负责显示<code>WebPImage</code>解码后的画面的控件，继承自<code>UIImageView</code>。<code>WebPImageView</code>添加解码<code>webp</code>画面的<code>WebPImageOperation</code>任务，并使用<code>CADisplayLink</code>保证在每帧时长间隔后刷新画面，每个<code>WebPImageView</code>都有一个用于专门解码<code>webp</code>第一帧画面的<code>OperationQueue</code>，和一个用于解码剩余图片的<code>OperationQueue</code>。两个<code>OperationQueue</code>的区别是前者优先级高，便于快速反馈<code>webp</code>画面从而避免线程资源占用导致画面空白的现象，后者的优先级低，这样避免了有网络请求的情况下由于资源占用导致导致数据响应延迟的现象。</p>
     <p>这几个类之间的关系如下图所示：</p>
     <p><img src="../assets/webp_desc.png"></p>
 
@@ -785,11 +815,11 @@ end
     <h4>1. WebCache</h4>
     <p>用于管理缓存的类，主要包含<code>NSCache</code>内存缓存、磁盘缓存数据查找，以及数据进行内存存储、磁盘存储等功能。</p>
     <h4>2. WebDownloadOperation</h4>
-    <p>结合<code>NSURLSession</code>处理网络资源下载任务，继承自NSOperation。</p>
+    <p>结合<code>URLSession</code>处理网络资源下载任务，继承自Operation。</p>
     <h4>3. WebDownloader</h4>
     <p>网络资源下载器，使用并发队列管理上面的<code>WebDownloadOperation</code>任务。</p>
     <h4>4. WebCombineOperation</h4>
-    <p>由查询二级缓存的<code>NSOperation</code>任务和用于下载资源的<code>WebDownloadOperation</code>任务组成，方便后续取消任务。</p>
+    <p>由查询二级缓存的<code>Operation</code>任务和用于下载资源的<code>WebDownloadOperation</code>任务组成，方便后续取消任务。</p>
     <p>这几个类之间的关系如下图所示：</p>
     <p><img src="../assets/webcache_desc.png"></p>
 
@@ -870,32 +900,30 @@ end
     <p><code>AVPlayerLayer</code>是<code>AVPlayer</code>的可视化输出对象，<code>AVPlayer</code>则提供控制视频播放操作的接口，<code>AVURLAsset</code>表示一个视频资源，而<code>AVPlayerItem</code>则作为<code>AVURLAsset</code>视频资源的载体，这个<code>AVPlayerItem</code>载体则作为视频源提供给<code>AVPlayer</code>，<code>AVPlayer</code>通过替换<code>AVPlayerItem</code>来替换视频源，它们之间的关系如下图所示：</p>
     <p><img src="../assets/avplayer_relationship_desc.jpg"/></p>
 
-    <h4>2. NSURLSession</h4>
-    <p>使用<code>NSURLSession</code>下载网络视频，同时通过实现<code>NSURLSessionTaskDelegate</code>、 <code>NSURLSessionDataDelegate</code>方法，为视频播放器实时提供播放数据。代理方法如下图所示：</p>
-    <p><img src="../assets/urlsession_desc.png"/></p>
+    <h4>2. URLSession</h4>
+    <p>使用<code>URLSession</code>下载网络视频，同时通过实现<code>URLSessionTaskDelegate</code>、 <code>URLSessionDataDelegate</code>方法，为视频播放器实时提供播放数据。代理方法如下图所示：</p>
+    <p><img src="../assets/urlsession_desc_swift.png"/></p>
 
     <h4>3. AVAssetResourceLoaderDelegate</h4>
     <p><code>AVAssetResourceLoaderDelegate</code>提供处理来自<code>AVURLAsset</code>资源的加载请求。通俗来说，就是将<code>AVURLAsset</code>资源的指定部分数据不断填充到<code>AVAssetResourceLoaderDelegate</code>方法生成的<code>AVAssetResourceLoadingRequest</code>请求中，被填充的<code>AVAssetResourceLoadingRequest</code>将数据不断提供给视频播放器，以此来实现边加载边播的效果，以下3步尤为重要：</p>
     <pre>
         <code>
 //① 将视频的网络路径的scheme改为其他自定义的scheme类型，http、https这类预留的scheme类型不能使AVAssetResourceLoaderDelegate中的方法回调
-wself.sourceURL = [wself.sourceURL.absoluteString urlScheme:@"streaming"];
-
+self?.sourceURL = self?.sourceURL?.absoluteString.urlScheme(scheme: "streaming")
 
 //️② 设置AVAssetResourceLoaderDelegate代理
-[wself.urlAsset.resourceLoader setDelegate:wself queue:dispatch_get_main_queue()];
-
+self?.urlAsset?.resourceLoader.setDelegate(self, queue: DispatchQueue.main)
 
 //③ 实现AVAssetResourceLoaderDelegate代理方法
-- (BOOL)resourceLoader:(AVAssetResourceLoader *)resourceLoader shouldWaitForLoadingOfRequestedResource:(AVAssetResourceLoadingRequest *)loadingRequest {
-        //创建网络视频下载请求，以及生成AVAssetResourceLoadingRequest用于加载视频缓存数据
+func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
+    //创建网络视频下载请求，以及生成AVAssetResourceLoadingRequest用于加载视频缓存数据
 }
-- (void)resourceLoader:(AVAssetResourceLoader *)resourceLoader didCancelLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest {
-        //AVAssetResourceLoadingRequest请求被取消，移除视频加载请求
+func resourceLoader(_ resourceLoader: AVAssetResourceLoader, didCancel loadingRequest: AVAssetResourceLoadingRequest) {
+    //AVAssetResourceLoadingRequest请求被取消，移除视频加载请求
 }
         </code>
     </pre>
-    <p>通过了解以上知识点，<code>AVPlayerLayer</code>实现边下载边播放的基本思路大概出来了。简单概括就是，<code>NSURLSession</code>请求下载网络视频资源，实现<code>NSURLSessionDataDelegate</code>、<code>NSURLSessionTaskDelegate</code>中相应方法实时获取下载数据，同时填充到<code>AVAssetResourceLoaderDelegate</code>代理方法中生成的<code>AVAssetResourceLoadingRequest</code>中，最后将数据不断提供给视频源，这就实现了视频边下载边播放的效果。如果需要视频缓存，则在视频下载完毕后保存下载数据到本地即可。实现流程如下图所示：</p>
+    <p>通过了解以上知识点，<code>AVPlayerLayer</code>实现边下载边播放的基本思路大概出来了。简单概括就是，<code>URLSession</code>请求下载网络视频资源，实现<code>URLSessionDataDelegate</code>、<code>URLSessionTaskDelegate</code>中相应方法实时获取下载数据，同时填充到<code>AVAssetResourceLoaderDelegate</code>代理方法中生成的<code>AVAssetResourceLoadingRequest</code>中，最后将数据不断提供给视频源，这就实现了视频边下载边播放的效果。如果需要视频缓存，则在视频下载完毕后保存下载数据到本地即可。实现流程如下图所示：</p>
     <p><img src="../assets/avasset_loading_delegate_desc.png"></p>
     <h2 id="3.3">3.3 UITableView实现视频源自动播放</h2>
     <p>
@@ -905,29 +933,23 @@ wself.sourceURL = [wself.sourceURL.absoluteString urlScheme:@"streaming"];
     <p>由于<code>UITableView</code>继承自<code>UIScrollView</code>的<code>pagingEnabled</code>属性无法灵活的实现分页效果，在抖音demo中我们通过重写<code>UIScrollViewDelegate</code>代理中<code>scrollViewDidEndDragging</code>方法，并结合<code>UITableView</code>的<code>scrollToRowAtIndexPath</code>，实现<code>UITableView</code>上下滑动切换到指定<code>cell</code>的效果，代码如下：</p>
     <pre>
         <code>
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CGPoint translatedPoint = [scrollView.panGestureRecognizer translationInView:scrollView];
-        //UITableView禁止响应其他滑动手势
-        scrollView.panGestureRecognizer.enabled = NO;
+func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        DispatchQueue.main.async {
+            let translatedPoint = scrollView.panGestureRecognizer.translation(in: scrollView)
+            scrollView.panGestureRecognizer.isEnabled = false
 
-        if(translatedPoint.y < -50 && self.currentIndex < (self.data.count - 1)) {
-            self.currentIndex ++;   //向下滑动索引递增
-        }
-        if(translatedPoint.y > 50 && self.currentIndex > 0) {
-            self.currentIndex --;   //向上滑动索引递减
-        }
-        [UIView animateWithDuration:0.15
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseOut animations:^{
-                                //UITableView滑动到指定cell
-                                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.currentIndex inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                            } completion:^(BOOL finished) {
-                                //UITableView可以响应其他滑动手势
-                                scrollView.panGestureRecognizer.enabled = YES;
-                            }];
-
-    });
+            if translatedPoint.y < -50 && self.currentIndex < (self.data.count - 1) {
+                self.currentIndex += 1
+            }
+            if translatedPoint.y > 50 && self.currentIndex > 0 {
+                self.currentIndex -= 1
+            }
+            UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
+                self.tableView?.scrollToRow(at: IndexPath.init(row: self.currentIndex, section: 0), at: UITableViewScrollPosition.top, animated: false)
+            }, completion: { finished in
+                scrollView.panGestureRecognizer.isEnabled = true
+        })
+    }
 }</code>
     </pre>
     <p>
@@ -937,7 +959,7 @@ wself.sourceURL = [wself.sourceURL.absoluteString urlScheme:@"streaming"];
     <p>
         一句话概括<code>UITableView</code>自动播放当前<code>cell</code>视频源原理，就是每次上下滑动切换<code>cell</code>时，暂停播放其他<code>cell</code>的视频源的同时加载播放当前<code>cell</code>视频源。在抖音demo中通过自定义<code>AVPlayerManager</code>类来管理<code>UITableView</code>中<code>cell</code>的<code>AVPlayer</code>的播放和暂停，代码请查看<code>AVPlayerManager.h</code>和<code>AVPlayerManager.m</code>文件。代码细节如下图所示：
     </p>
-    <p><img src="../assets/avplayer_manager_desc.jpg"/></p>
+    <p><img src="../assets/avplayer_manager_desc_swift.png"/></p>
 
     <h2 id="3.4">3.4 悬浮于软键盘之上的UITextView</h2>
     <p>当<code>UITextView</code>进入编辑状态，会弹出软键盘，于此同时<code>UITextView</code>也向上移动悬浮于软键盘之上，这是许多移动端app常见的交互场景。在抖音视频播放界面下方，是用于填写评论的<code>UITextView</code>，触摸这个<code>UITextView</code>进行编辑，<code>UITextView</code>会悬浮于软键盘之上。实现这个效果需要以下3步：
@@ -946,34 +968,41 @@ wself.sourceURL = [wself.sourceURL.absoluteString urlScheme:@"streaming"];
     <h4>1. 为软键盘弹出和收起动作注册通知</h4>
     <pre>
         <code>
-[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];</code>
+NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+
+NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)</code>
     </pre>
     <h4>2. 获取软键盘高度</h4>
     <pre>
         <code>
-@implementation NSNotification (Extension)
-- (CGFloat)keyBoardHeight {
-    NSDictionary *userInfo = [self userInfo];
-    CGSize size = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    return UIInterfaceOrientationIsLandscape(orientation) ? size.width : size.height;
+extension Notification {
+    func keyBoardHeight() -> CGFloat {
+        if let userInfo = self.userInfo {
+            if let value = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+                let size = value.cgRectValue.size
+                let orientation = UIApplication.shared.statusBarOrientation
+                return UIInterfaceOrientationIsLandscape(orientation) ? size.width : size.height
+            }
+        }
+        return 0
+    }
 }</code>
     </pre>
     <h4>3. 软键盘弹出和收起对应的处理方法</h4>
     <pre>
         <code>
-- (void)keyboardWillShow:(NSNotification *)notification {
-    self.backgroundColor = ColorBlackAlpha40;
-    //获取当前软键盘高度
-    _keyboardHeight = [notification keyBoardHeight];
-    ...  //修改UITextView位置
+@objc func keyboardWillShow(notification:Notification) {
+    self.backgroundColor = ColorBlackAlpha40
+    keyboardHeight = notification.keyBoardHeight()
+    updateViewFrameAndState()
+    hoverDelegate?.hoverTextViewStateChange(isHover: true)
 }
-- (void)keyboardWillHide:(NSNotification *)notification {
-    self.backgroundColor = ColorClear;
-    //软键盘高度置0
-    _keyboardHeight = 0;
-    ... //修改UITextView位置
+
+@objc func keyboardWillHide(notification:Notification) {
+    self.backgroundColor = ColorClear
+    keyboardHeight = 0
+    updateViewFrameAndState()
+    hoverDelegate?.hoverTextViewStateChange(isHover: false)
 }</code>
     </pre>
     <h2 id="3.5">3.5 控件手势冲突处理</h2>
@@ -983,39 +1012,39 @@ wself.sourceURL = [wself.sourceURL.absoluteString urlScheme:@"streaming"];
     <pre>
         <code>
 //获取点击坐标，用于设置爱心显示位置
-CGPoint point = [sender locationInView:self.container];
+let point = sender.location(in: container)
 //获取当前时间
-NSTimeInterval time=[[NSDate dateWithTimeIntervalSinceNow:0] timeIntervalSince1970];
+let time = CACurrentMediaTime()
 //判断当前点击时间与上次点击时间的时间间隔
-if(time - self.lastTapTime > 0.25f) {
-   //推迟0.25秒执行单击方法
-   [self performSelector:@selector(singleTapAction) withObject:nil afterDelay:0.25f];
-}else {
-   //取消执行单击方法
-   [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(singleTapAction) object: nil];
-   //执行连击显示爱心的方法
-   [self showLikeViewAnim:point oldPoint:self.lastTapPoint];
+if (time - lastTapTime) > 0.25 {
+    //推迟0.25秒执行单击方法
+    self.perform(#selector(singleTapAction), with: nil, afterDelay: 0.25)
+} else {
+    //取消执行单击方法
+    NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(singleTapAction), object: nil)
+    //执行连击显示爱心的方法
+    showLikeViewAnim(newPoint: point, oldPoint: lastTapPoint)
 }
 //更新上一次点击位置
-self.lastTapPoint = point;
+lastTapPoint = point
 //更新上一次点击时间
-self.lastTapTime =  time;</code>
+lastTapTime = time</code>
     </pre>
     <h4>2. 父控件添加手势导致<code>UITableView</code>、<code>UICollectionView</code>的<code>didSelectRowAtIndexPath</code>代理方法不响应</h4>
     <p>触摸视频播放页面右侧的评论图标会以弹窗的形式弹出评论列表，弹窗是一个占满全屏的自定义<code>View</code>，评论列表由<code>UITableView</code>构成，占屏幕3/4，居于下方，上方1/4透明。触摸上方透明处自动收起评论弹窗，因此需要在当前父容器控件添加<code>UITapGestureRecognizer</code>，正是这个<code>UITapGestureRecognizer</code>接收了点击事件导致评论列表的<code>didSelectRowAtIndexPath</code>方法无法执行，为解决这个冲突我们需要实现<code>UIGestureRecognizerDelegate</code>中的<code>shouldReceiveTouch</code>方法，通过获取<code>UITouch</code>触摸事件中的控件类型来判断是否接收当前点击事件的方法。代码片段如下：</p>
     <pre>
         <code>
 //① 为当前父容器添加UITapGestureRecognizer并设置UIGestureRecognizerDelegate代理
-UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGuesture:)];
-tapGestureRecognizer.delegate = self;
-[self addGestureRecognizer:tapGestureRecognizer];
+let tapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(handleGuesture(sender:)))
+tapGestureRecognizer.delegate = self
+self.addGestureRecognizer(tapGestureRecognizer)
 
 //② 重写UIGestureRecognizerDelegate中的shouldReceiveTouch方法
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    if ([NSStringFromClass([touch.view.superview class]) isEqualToString:@"CommentListCell"]) {
-        return NO;
-    }else {
-        return YES;
+func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    if NSStringFromClass((touch.view?.superview?.classForCoder)!).contains("CommentListCell")  {
+        return false
+    } else {
+        return true
     }
 }</code>
     </pre>
@@ -1025,16 +1054,16 @@ tapGestureRecognizer.delegate = self;
     </p>
     <pre>
         <code>
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    UIView *hitView = [super hitTest:point withEvent:event];
-    if(hitView == self){
+override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    let hitView = super.hitTest(point, with: event)
+    if hitView == self {
         //判断当前状态是否为编辑状态
-        if(_editMessageType == EditNoneMessage) {
+        if editMessageType == .EditNoneMessage {
             //如果不是的话则当前触摸控件不作为事件响应控件
-            return nil;
+            return nil
         }
     }
-    return hitView;
+    return hitView
 }</code>
     </pre>
     <h1 id="4">IM即时聊天</h1>
@@ -1086,8 +1115,8 @@ tapGestureRecognizer.delegate = self;
     <h4>5. Websocket接口</h4>
     <p>URL：<code>ws://116.62.9.17:8080/douyin/groupchat</code>，每次通过上面提供的消息发送接口发送消息成功后，抖音demo服务端会使用<code>Websocket</code>向客户端主动推送群聊消息，格式为群聊消息的json数据。</p>
     <h2 id="4.2">4.2 Websocket实现即时聊天</h2>
-    <p>抖音demo采用Facebook开源的<code>RocketSocket</code>库实现<code>IM即时聊天</code>，这个库依照<code>Websocket</code>协议，支持<code>ws</code>、<code>wss</code>传输协议，并提供各种消息发送接收方法。在抖音demo中基于<code>RocketSocket</code>库提供的方法封装了<code>WebSocketManager</code>类用于管理连接的建立、消息的接收。基本实现思路：先建立与服务器的长连接，并在连接断开后重新连接，实现<code>SRWebSocketDelegate</code>代理主要用于接收消息，观察<code>SRWebSocket.readyState</code>值变化来实时监听当前连接状态，最后注册消息接收通知来获取消息数据。具体代码查看<code>WebSocketManager.h</code>和<code>WebSocketManager.m</code>文件。<code>WebSocketManager</code>类代码细节如下图所示：</p>
-    <p><img src="../assets/websocket_desc.png"/></p>
+    <p>抖音demo采用Starscream库实现<code>IM即时聊天</code>，这个库依照<code>Websocket</code>协议，支持<code>ws</code>、<code>wss</code>传输协议，并提供各种消息发送接收方法。在抖音demo中基于<code>Starscream</code>库提供的方法封装了<code>WebSocketManager</code>类用于管理连接的建立、消息的接收。基本实现思路：先建立与服务器的长连接，并在连接断开后重新连接，实现<code>SRWebSocketDelegate</code>代理主要用于接收消息，观察<code>SRWebSocket.readyState</code>值变化来实时监听当前连接状态，最后注册消息接收通知来获取消息数据。具体代码查看<code>WebSocketManager</code>类。<code>WebSocketManager</code>类代码细节如下图所示：</p>
+    <p><img src="../assets/websocket_desc_swift.png"/></p>
     <h2 id="4.3">4.3 文本长宽计算汇总</h2>
     <p>
         在Android开发中控件的长宽可以根据文本内容自动改变，在文本内容上开发者不需要纠结太多，而在iOS开发中就没有那么便捷了。因为iOS控件无法根据文本内容自适应，为了更好的显示界面效果，通过计算文本<code>size</code>调整控件<code>frame</code>是iOS开发者经常碰到的情况，这里就汇总一下抖音demo中文本<code>size</code>计算的方法。
@@ -1096,71 +1125,34 @@ tapGestureRecognizer.delegate = self;
     <p>这种方法的返回值高度与<code>UIFont.lineHeight</code>一致，支持开头空格计算。但是包含emoji表情符的文本行高返回值有较大偏差。代码片段如下：</p>
     <pre>
         <code>
-@implementation NSString (Extension)
-
-- (CGSize)singleLineSizeWithText:(UIFont *)font{
-    return [self sizeWithAttributes:@{NSFontAttributeName:font}];
+extension String {
+    func singleLineSizeWithText(font:UIFont) -> CGSize {
+        return self.size(withAttributes: [NSAttributedStringKey.font : font])
+    }
 }</code>
     </pre>
     <h4>2.<code>CoreText</code>计算单行文本<code>size</code></h4>
     <p>这种方法支持包含emoji表情符的计算。文本开头空格、包含自定义插入的文本图片不纳入计算范围，这类情况会导致计算偏差。代码片段如下：</p>
-<pre>
+    <pre>
     <code>
-@implementation NSString (Extension)
-
-- (CGSize)singleLineSizeWithAttributeText:(UIFont *)font {
-    CTFontRef cfFont = CTFontCreateWithName((CFStringRef) font.fontName, font.pointSize, NULL);
-    CGFloat leading = font.lineHeight - font.ascender + font.descender;
-    CTParagraphStyleSetting paragraphSettings[1] = { kCTParagraphStyleSpecifierLineSpacingAdjustment, sizeof (CGFloat), &leading };
-
-    CTParagraphStyleRef  paragraphStyle = CTParagraphStyleCreate(paragraphSettings, 1);
-    CFRange textRange = CFRangeMake(0, self.length);
-
-    CFMutableAttributedStringRef string = CFAttributedStringCreateMutable(kCFAllocatorDefault, self.length);
-
-    CFAttributedStringReplaceString(string, CFRangeMake(0, 0), (CFStringRef) self);
-
-    CFAttributedStringSetAttribute(string, textRange, kCTFontAttributeName, cfFont);
-    CFAttributedStringSetAttribute(string, textRange, kCTParagraphStyleAttributeName, paragraphStyle);
-
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(string);
-    return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), nil, CGSizeMake(DBL_MAX, DBL_MAX), nil);
+extension String {
+    func singleLineSizeWithAttributeText(font:UIFont) -> CGSize {
+        let attributes = [NSAttributedStringKey.font:font]
+        let attString = NSAttributedString(string: self,attributes: attributes)
+        let framesetter = CTFramesetterCreateWithAttributedString(attString)
+        return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0,length: 0), nil, CGSize(width: Double.greatestFiniteMagnitude, height: Double.greatestFiniteMagnitude), nil)
+    }
 }</code>
-</pre>
-    <h4>3.<code>CoreText</code>计算多行文本<code>size</code></h4>
-    <p>这种方法支持包含emoji表情符的计算。文本开头空格、包含自定义插入的文本图片不纳入计算范围，这类情况会导致计算偏差。代码片段如下：</p>
-<pre>
-    <code>
-@implementation NSString (Extension)
-
-- (CGSize)multiLineSizeWithAttributeText:(CGFloat)width font:(UIFont *)font {
-    CTFontRef cfFont = CTFontCreateWithName((CFStringRef) font.fontName, font.pointSize, NULL);
-    CGFloat leading = font.lineHeight - font.ascender + font.descender;
-    CTParagraphStyleSetting paragraphSettings[1] = { kCTParagraphStyleSpecifierLineBreakMode, sizeof (CGFloat), &leading };
-
-    CTParagraphStyleRef  paragraphStyle = CTParagraphStyleCreate(paragraphSettings, 1);
-    CFRange textRange = CFRangeMake(0, self.length);
-
-    CFMutableAttributedStringRef string = CFAttributedStringCreateMutable(kCFAllocatorDefault, self.length);
-
-    CFAttributedStringReplaceString(string, CFRangeMake(0, 0), (CFStringRef) self);
-
-    CFAttributedStringSetAttribute(string, textRange, kCTFontAttributeName, cfFont);
-    CFAttributedStringSetAttribute(string, textRange, kCTParagraphStyleAttributeName, paragraphStyle);
-
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(string);
-    return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), nil, CGSizeMake(width, DBL_MAX), nil);
-}</code>
-</pre>
-    <h4>4.<code>boundingRectWithSize</code>多行文本<code>size</code></h4>
+    </pre>
+    <h4>3.<code>boundingRectWithSize</code>多行文本<code>size</code></h4>
     <p>这种方法支持文本开头空格、包含自定义插入的文本图片不纳入计算范围。当文本包含emoji表情符仍然会有较大偏差，但在<code>UITextView</code>和<code>UILabel</code>等控件中不影响显示。代码片段如下：</p>
     <pre>
         <code>
-@implementation NSAttributedString (Extension)
-
-- (CGSize)multiLineSize:(CGFloat)width {
-    CGRect rect = [self boundingRectWithSize:CGSizeMake(width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
-    return CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+extension NSAttributedString {
+    func multiLineSize(width:CGFloat) -> CGSize {
+        let rect = self.boundingRect(with: CGSize.init(width: width, height: CGFloat(MAXFLOAT)), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+        return CGSize.init(width: rect.size.width, height: rect.size.height)
+    }
 }</code>
     </pre>
     <h2 id="4.4">4.4 表情编辑功能实现</h2>
@@ -1191,14 +1183,19 @@ tapGestureRecognizer.delegate = self;
     [...]                  第6页</code>
     </pre>
     <h4>3. 编写<code>EmotionSelector</code>表情包选择器</h4>
-    <p><code>EmotionSelector</code>使用<code>UICollectionView</code>作为容器，结合<code>emotion.json</code>中存储每页表情图片文件名的<code>NSArray</code>二维数组数据，为<code>UICollectionView</code>每一页中的<code>cell</code>匹配对应的表情图片，选中表情后会通过自定义<code>EmotionSelectorDelegate</code>返回<code>emotion.json</code>中表情图片文件名作为<code>key</code>值、表情对应的文本作为<code>value</code>值的<code>NSDictionary</code>字典对应的<code>key</code>值，即返回相应的表情包图片文件名。具体代码查看<code>EmotionSelector.h</code>和<code>EmotionSelector.m</code>文件。界面解析如下图所示：</p>
+    <p><code>EmotionSelector</code>使用<code>UICollectionView</code>作为容器，结合<code>emotion.json</code>中存储每页表情图片文件名的<code>Array</code>二维数组数据，为<code>UICollectionView</code>每一页中的<code>cell</code>匹配对应的表情图片，选中表情后会通过自定义<code>EmotionSelectorDelegate</code>返回<code>emotion.json</code>中表情图片文件名作为<code>key</code>值、表情对应的文本作为<code>value</code>值的<code>Dictionary</code>字典对应的<code>key</code>值，即返回相应的表情包图片文件名。具体代码查看<code>EmotionSelector</code>类。界面解析如下图所示：</p>
     <p><img src="../assets/emotion_selector_desc.png"/></p>
     <h4>4. 编写<code>EmotionHelper</code>帮助类</h4>
-    <p>在iOS上通过向<code>NSMutableAttributedString</code>指定位置插入<code>NSTextAttachment</code>可以实现图文混排，而表情编辑功能其实质就是图文混排。<code>NSTextAttachment</code>可以理解为封装了图片特殊文本，因此实现表情编辑功能实质上就是表情文本与<code>NSTextAttachment</code>的之间的相互转换，例：[飞吻]⇌😘。<code>EmotionHelper</code>则封装了相关的转换方法.具体代码查看<code>EmotionHelper.h</code>和<code>EmotionHelper.m</code>文件。<code>EmotionHelper</code>类代码细节如下图所示：</p>
+    <p>在iOS上通过向<code>NSMutableAttributedString</code>指定位置插入<code>NSTextAttachment</code>可以实现图文混排，而表情编辑功能其实质就是图文混排。<code>NSTextAttachment</code>可以理解为封装了图片特殊文本，因此实现表情编辑功能实质上就是表情文本与<code>NSTextAttachment</code>的之间的相互转换，例：[飞吻]⇌😘。<code>EmotionHelper</code>则封装了相关的转换方法.具体代码查看<code>EmotionHelper</code>类。<code>EmotionHelper</code>类代码细节如下图所示：</p>
     <p><img src="../assets/emotion_helper_desc.jpg"/></p>
 
     <h1 id="5">总结</h1>
-    <p>以上虽然不能完全覆盖抖音demo的方方面面，但也算是比较好的一个"使用指南"。抖音demo其实只有三个<code>ViewController</code>，但是每个<code>ViewController</code>都由一个一个细节组成。真正在开发一款完整app的时候，其实也都是由一个一个细节慢慢堆积而成的。熟话说，千里之行始于足下，希望这个由一个个小细节搭建而成的抖音demo能对你有帮助，谢谢！</p>
+    <blockquote style="background-color: #f9f9f9">
+        <p>
+            抖音demo除了上面章节所说明的内容外，还包含很多自行封装的控件。每个控件都涉及不同的动画效果，比如聊天界面的下拉加载更多聊天记录的刷新控件、兼容<code>UITableView</code>和<code>UICollection</code>的加载更多控件、视频播放界面的循环文字控件等等。当前是抖音demo<code>Swift</code>版本介绍，<code>Object-C</code>版请点击<a href="https://sshiqiao.github.io/document/douyin-objectc.html">这里</a>。
+        </p>
+    </blockquote>
+
 </div>
 </body>
 </html>
