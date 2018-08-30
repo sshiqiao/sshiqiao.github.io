@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>抖音Swift版介绍</title>
     <!--网页标题左侧显示-->
-    <link rel="icon" href="../assets/background2.jpg" type="image/x-icon">
+    <link rel="icon" href="../assets/avatar_circle_small.png" type="image/x-icon">
     <!--收藏夹显示图标-->
-    <link rel="shortcut icon" href="../assets/background2.jpg" type="image/x-icon">
-    <link rel="stylesheet" href="../css/document.css">
+    <link rel="shortcut icon" href="../assets/avatar_circle_small.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/home.css">
+    <!--<link rel="stylesheet" href="../css/document.css">-->
 </head>
-<body style="background: url('../assets/background3.jpg') no-repeat fixed;">
-<div class="cover-overlay"></div>
-<header class="index-content">
-    <div style="background-color: #ffffff;position: relative">
-        <img src="../assets/background2.jpg" style="border-radius: 0px;z-index: 0;">
-        <img src="../assets/home.png" alt="middle" class="panel-img" id="home-img" onclick="javascript:window.location.href='https://github.com/sshiqiao'"/>
+<body>
+<div class="header" style="margin-top: -20px">
+    <div>
+        <div style="padding-top: 20px;padding-bottom: 20px;">
+            <img src="../assets/avatar_circle_small.png" height="40" width="40" style="vertical-align: center;margin-left: 20px;float:left;">
+            <p style="color: white; padding: 10px;margin-left: 70px">Qiao Shi</p>
+            <table class="header-menu">
+                <tr>
+                    <th>
+                        <a href="../index.html">Home</a>
+                    </th>
+                    <th>
+                        <a href="https://github.com/sshiqiao">Github</a>
+                    </th>
+                    <th>
+                        <a href="../about.html">About</a>
+                    </th>
+                    <th>
+                        <a href="#footer">Contact</a>
+                    </th>
+                </tr>
+            </table>
+        </div>
     </div>
+</div>
+<header class="index-content" style="padding-top: 80px">
 
     <ul class="panel-index">
         <li style="padding: 5px 0px 5px 0px;font-weight: bold"><img src="../assets/menu.svg" class="icon-img"/>目录</li>
@@ -71,21 +92,22 @@
     </script>
 </header>
 
-<div class="content-wrapper">
+<div class="content-wrapper" style="padding-top: 100px">
     <div class="post-meta">
         <time>2018-08-19 &#8226; iOS Swift</time>
     </div>
+
     <h1 id="1">抖音Swift版介绍</h1>
     <blockquote>
         <p>
-            <a href="https://sshiqiao.github.io/document/douyin-objectc.html">上一篇</a>写完抖音Object-C版，这一篇写Swift版。</br>
+            <a href="../document/douyin-objectc.html">上一篇</a>写完抖音Object-C版，这一篇写Swift版。</br>
             Swift版代码逻辑大致与Object-C版一致，只是采用了不同的第三方库。</br>
             除此之外，难得有机会使用Object-C和Swift写同样的功能，顺便总结一下两者在进行iOS开发的异同。</br>
         </p>
     </blockquote>
     <h2 id="1.1">1.1 引言</h2>
     <p>
-        Object-C语言相比其他语言要复杂许多，对初学者不太友好，这也是是苹果大力推行Swift语言的原因。Swift其实是基于Object-C进行包装，为开发者提供便利的开发语言，很多设计理念都是一样的，从Object-C转Swift开发，或者从Swift转Object-C开发其实并没有很大的难度。这篇文章的抖音demo则使用Swift语言编写，地址请点击<a href="https://github.com/sshiqiao/douyin-ios-swift">这里</a>。本文属于原创，未经允许禁止转载。<br/>
+        Object-C语言相比其他语言要复杂许多，对初学者不太友好，这也是是苹果大力推行Swift语言的原因。Swift其实是基于Object-C进行包装，为开发者提供便利的开发语言，很多设计理念都是一样的，从Object-C转Swift开发，或者从Swift转Object-C开发其实并没有很大的难度。这篇文章的抖音demo则使用Swift语言编写，源码地址请点击<a href="https://github.com/sshiqiao/douyin-ios-swift">这里</a>。本文属于原创，未经允许禁止转载。<br/>
     </p>
     <h2 id="1.2">1.2 展示图</h2>
     <p>
@@ -159,7 +181,7 @@
         每个客户端在启动项目app后，会根据当前设备的<code>udid</code>(<code>Unique Device Identifier</code>设备唯一标识符)注册访客用户，生成的访客用户可以使用群聊以及评论视频等功能。
     </p>
 
-    <table>
+    <table class="document">
         <tr>
             <th>
                 <span>类别</span>
@@ -201,7 +223,7 @@
         抖音用户是通过<code>Charles</code>抓取到到抖音用户json数据，是真实存在的抖音用户，根据id可查询，抖音demo的个人主页信息则是以我的抖音数据填充的。
     </p>
 
-    <table>
+    <table class="document">
         <tr>
             <th>
                 <span>类别</span>
@@ -243,7 +265,7 @@
         短视频列表数据也是通过Charles抓取并保存在服务器数据库中的，但是数据中的视频、头像等资源路径调取的是抖音原始服务器路径。
     </p>
 
-    <table>
+    <table class="document">
         <tr>
             <th>
                 <span>类别</span>
@@ -298,7 +320,7 @@
     <p>
         原计划根据抖音聊天界面实现一对一聊天，考虑到demo结构的简洁度以及便于使用该demo的用户进行即时聊天测试，就将一对一聊天改为群聊。一对一聊天和群聊两者就实现原理来讲，区别仅仅是服务器向指定单个客户端发送消息和像多个客户端发送消息。群聊API包括发送文本、图片消息以及获取消息列表和删除指定消息等。<br/>
     </p>
-    <table>
+    <table class="document">
         <tr>
             <th>
                 <span>类别</span>
@@ -422,7 +444,7 @@
     <p>
         评论分为抖音用户评论数据和访客用户评论数据，抖音用户评论数据来自<code>Charles</code>抓包，访客用户可自由对视频进行评论。
     </p>
-    <table>
+    <table class="document">
         <tr>
             <th>
                 <span>类别</span>
@@ -1187,15 +1209,30 @@ extension NSAttributedString {
     <p><img src="../assets/emotion_selector_desc.png"/></p>
     <h4>4. 编写<code>EmotionHelper</code>帮助类</h4>
     <p>在iOS上通过向<code>NSMutableAttributedString</code>指定位置插入<code>NSTextAttachment</code>可以实现图文混排，而表情编辑功能其实质就是图文混排。<code>NSTextAttachment</code>可以理解为封装了图片特殊文本，因此实现表情编辑功能实质上就是表情文本与<code>NSTextAttachment</code>的之间的相互转换，例：[飞吻]⇌😘。<code>EmotionHelper</code>则封装了相关的转换方法.具体代码查看<code>EmotionHelper</code>类。<code>EmotionHelper</code>类代码细节如下图所示：</p>
-    <p><img src="../assets/emotion_helper_desc.jpg"/></p>
+    <p><img src="../assets/emotion_helper_desc_swift.png"/></p>
 
     <h1 id="5">总结</h1>
-    <blockquote style="background-color: #f9f9f9">
+    <blockquote style="background-color: #f9f9f9;margin-bottom: 100px">
         <p>
-            抖音demo除了上面章节所说明的内容外，还包含很多自行封装的控件。每个控件都涉及不同的动画效果，比如聊天界面的下拉加载更多聊天记录的刷新控件、兼容<code>UITableView</code>和<code>UICollection</code>的加载更多控件、视频播放界面的循环文字控件等等。当前是抖音demo<code>Swift</code>版本介绍，<code>Object-C</code>版请点击<a href="https://sshiqiao.github.io/document/douyin-objectc.html">这里</a>。
+            抖音demo除了上面章节所说明的内容外，还包含很多自行封装的控件。每个控件都涉及不同的动画效果，比如聊天界面的下拉加载更多聊天记录的刷新控件、兼容<code>UITableView</code>和<code>UICollection</code>的加载更多控件、视频播放界面的循环文字控件等等。当前是抖音demo<code>Swift</code>版本介绍，<code>Object-C</code>版请点击<a href="../document/douyin-objectc.html">这里</a>。
         </p>
     </blockquote>
 
 </div>
+<footer id="footer">
+    <table class="bottom-link">
+        <tr>
+            <th>
+                <a href="https://github.com/sshiqiao">Github</a>
+            </th>
+            <th>
+                <a href="mailto:sqshiqiao@gmail.com">E-Mail</a>
+            </th>
+            <th>
+                <a href="https://weibo.com">Weibo</a>
+            </th>
+        </tr>
+    </table>
+</footer>
 </body>
 </html>
