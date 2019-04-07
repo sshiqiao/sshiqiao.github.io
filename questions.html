@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qiao Shi</title>
+    <link rel="icon" href="assets/avatar_circle_small.png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/avatar_circle_small.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+<div class="header">
+    <div>
+        <div style="padding-top: 15px;padding-bottom: 15px;">
+            <a href="https://github.com/sshiqiao">
+                <img src="assets/avatar_circle_small.png" height="40" width="40"
+                     style="vertical-align: center;margin-left: 20px;float:left;">
+            </a>
+            <p style="color: white; padding: 7.5px;margin-left: 70px">Qiao Shi</p>
+            <table class="header-menu">
+                <tr>
+                    <th>
+                        <a href="index.html">Home</a>
+                    </th>
+                    <th>
+                        <a href="https://github.com/sshiqiao">Github</a>
+                    </th>
+                    <th>
+                        <a href="about.html">About</a>
+                    </th>
+                    <th>
+                        <a href="mailto:sqshiqiao@gmail.com">Gmail</a>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div style="padding-top: 160px;padding-bottom: 60px; background-color: #ffffff">
+    <div class="container">
+        <section>
+            <div class="line">
+                <span class="line-l" style="background-color: #4c4c4c"></span>
+                <span class="line-r" style="background-color: #4c4c4c"></span>
+                <img src="assets/icon_question.png" class="line-icon">
+            </div>
+            <div id="start">
+                <p class="title" style="color: #4c4c4c">问卷</p>
+                <p class="info" style="color: #4c4c4c">“嗨，你来啦”</br>“有几个问题想问你，花点时间回答一下吧”</p>
+                <center>
+                    <button class="round_button round_button_shadow"
+                            onclick="document.getElementById('start').style.display = 'none';document.getElementById('question0').style.display = 'block';">
+                        Start
+                    </button>
+                    </a></center>
+            </div>
+            <div id="info" style="display: none; margin-left: 80px; margin-right: 80px">
+                <!--<p class="title" style="color: #4c4c4c">信息填写</p>-->
+                <p class="info" style="color: #4c4c4c; margin-bottom: 10px">“信息不会透露给第三方，请放心填写。”</p>
+                <center><input id="name" type="text" name="name" placeholder="姓  名"/></center>
+                <center><input id="mail" type="text" name="mail" placeholder="邮  箱"/></center>
+                <center><textarea id="advise" name="advise" placeholder="建  议..."></textarea></center>
+                <p></p>
+                <center><button class="round_button round_button_shadow" onclick="onNext()">Next</button></center>
+            </div>
+            <div id="end" style="display: none">
+                <p class="title" style="color: #4c4c4c">问卷已提交</p>
+                <p class="info" style="color: #4c4c4c">“问卷已经提交，感谢填写。”<br>“希望以后有机会再次取得你的建议，谢谢。”</p>
+                <center><a href="https://sshiqiao.github.io/index.html">
+                    <button class="round_button round_button_shadow">Home</button>
+                </a></center>
+            </div>
+
+            <form id="question_form" style="padding-left: 100px; padding-right: 100px">
+            </form>
+            <script>
+                function onNext(){
+                    document.getElementById("info").style.display = "none";
+                    document.getElementById("end").style.display = "block";
+                    var request = new XMLHttpRequest();
+                    var answers = '';
+                    for (var i = 0; i < map.size; i++) {
+                        answers += map.get(i);
+                    }
+
+                    var name = document.getElementById("name").value;
+                    var mail = document.getElementById("mail").value;
+                    var advise = document.getElementById("advise").value;
+
+                    request.open('get', 'http://116.62.9.17:8080/douyin/question/submit?answers=' + answers + "&name=" + name + "&mail=" + mail + "&advise=" + advise);
+                    request.send();
+                    request.onreadystatechange = function () {
+                        if (request.readyState == 4 && request.status == 200) {
+                            console.log(request.responseText);
+                        }
+                    }
+                }
+            </script>
+            <script>
+                var request = new XMLHttpRequest();
+                request.open('get', 'http://116.62.9.17:8080/douyin/question/questions', true);
+                request.send();
+                var dataLen = 0;
+                request.onreadystatechange = function () {
+                    if (request.readyState == 4 && request.status == 200) {
+                        var response = JSON.parse(request.responseText);
+                        var data = response.data;
+
+                        dataLen = data.length/2;
+                        var questionForm = document.getElementById("question_form");
+                        var innerHTML = '';
+                        for (var i = 0; i < data.length; i += 2) {
+                            var questionIdx = (i / 2);
+
+                            var questionId = "question" + questionIdx;
+                            var question = data[i][0] + '<br><br>' + '\n';
+
+                            var optioins = '';
+                            for (var j = 0; j < data[i + 1].length; j++) {
+                                var optionIdx = j;
+                                var option = '\t' + data[i + 1][optionIdx];
+                                optioins += '<label><input type="radio" name="' + questionIdx + '" value="' + (optionIdx + 1) + '">'+ option + '</label><br><br>' + '\n';
+                            }
+                            innerHTML += '<div id="' + questionId + '" style="display: none;">' + question + optioins + '</div>'
+                        }
+                        questionForm.innerHTML = innerHTML;
+                    }
+                }
+                var questionForm = document.getElementById("question_form");
+                var map = new Map()
+                questionForm.addEventListener('click', function () {
+                    var e = event || window.event;
+                    if (e.target && e.target.nodeName.toUpperCase() == "INPUT") {
+                        var index = parseInt(e.target.name);
+                        map.set(index, e.target.value);
+                        for (var i = 0; i < dataLen; i++) {
+                            if (i + "" == index + 1) {
+                                document.getElementById("question" + i).style.display = "block";
+                            } else {
+                                document.getElementById("question" + i).style.display = "none";
+                            }
+                        }
+                        if (index == dataLen - 1) {
+                            document.getElementById("info").style.display = "block";
+                        }
+                    }
+                }, false);
+            </script>
+        </section>
+    </div>
+</div>
+
+
+<footer id="footer">
+    <table class="bottom-link">
+        <tr>
+            <th style="color: #ffffff; font-size: smaller">
+                Copyright © 2018 Qiao Shi
+            </th>
+        </tr>
+    </table>
+</footer>
+
+</body>
+</html>
